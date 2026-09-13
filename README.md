@@ -4,13 +4,13 @@ Portfolio audiovisual con interfaz inspirada en Finder.
 
 ## Estructura
 
-- `content.js`: contenido editable del portfolio (títulos, descripciones, aportaciones y orden de imágenes).
+- `content.js`: contenido editable del portfolio. Aquí están el perfil/contacto, títulos, descripciones, aportaciones y el orden de las imágenes.
 - `app.js`: lógica e interacción de la web.
 - `styles.css`: estilos visuales.
 - `index.html`: estructura principal y carga de scripts.
 - `assets/`: imágenes, vídeo y audio.
 
-Para cambiar textos o el orden de una galería, edita `content.js`. No hace falta tocar `app.js`.
+Para cambiar textos, datos de contacto o el orden de una galería, edita `content.js`. No hace falta tocar `app.js`.
 
 ## Contenido
 
