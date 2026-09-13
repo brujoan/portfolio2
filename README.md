@@ -5,9 +5,9 @@ Portfolio audiovisual con interfaz inspirada en Finder.
 ## Contenido
 
 - Proyectos
-  - Spot inmobiliaria
-  - Spot peluquería y estética
-  - Ginpasf
+  - Spot iGestió
+  - Spot Pilar Marín
+  - GINPASF
   - @mixunets
 - Vertical
 - Fotos
@@ -18,6 +18,8 @@ Portfolio audiovisual con interfaz inspirada en Finder.
   - Analógico
     - Olympus Mju II
     - Contax G2
+- Retransmisiones deportivas
+  - Operación de cámara · Deportes
 - Producción musical
 - Todo
 - Contacto
@@ -47,3 +49,5 @@ La web busca primero estas cuatro miniaturas locales:
 - `assets/images/mixunets/04.jpg`
 
 Si no están, usa las miniaturas oficiales de YouTube como fallback.
+
+El nombre JOAN BRÚ de la esquina superior izquierda enlaza a Instagram.
