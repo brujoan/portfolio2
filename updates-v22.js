@@ -88,7 +88,7 @@ wireCarousel = function () {
   });
   track.style.cursor = "grab";
   track.style.userSelect = "none";
-  track.style.touchAction = "pan-y";
+  track.style.touchAction = "auto";
 
   function setActive(idx) {
     const safeIdx = Math.max(0, Math.min(idx, Math.max(dots.length - 1, 0)));
