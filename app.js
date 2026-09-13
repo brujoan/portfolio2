@@ -1,7 +1,8 @@
 const DATA = window.PORTFOLIO_CONTENT;
+const PROFILE = window.PORTFOLIO_PROFILE;
 
-if (!DATA) {
-  throw new Error("No se ha cargado content.js");
+if (!DATA || !PROFILE) {
+  throw new Error("No se ha cargado correctamente content.js");
 }
 
 let currentView = "folder";
@@ -17,6 +18,12 @@ const title = document.getElementById("windowTitle");
 const breadcrumb = document.getElementById("breadcrumb");
 const statusText = document.getElementById("statusText");
 const searchInput = document.getElementById("searchInput");
+const brandLink = document.querySelector(".brand a");
+
+if (brandLink) {
+  brandLink.href = PROFILE.instagramUrl;
+  brandLink.textContent = PROFILE.name;
+}
 
 function sectionItems(key) {
   const section = DATA[key];
@@ -500,7 +507,7 @@ function renderAllSummary() {
 }
 
 function renderContact() {
-  preview.innerHTML = `<section class="contact-screen"><div class="contact-kicker">JOAN BRÚ / AUDIOVISUAL</div><h1>Hablemos.</h1><p class="contact-intro">Foto, vídeo, postproducción, música o una idea que todavía no tiene forma.</p><div class="contact-links"><a class="contact-link" href="mailto:joanbru008@gmail.com"><span class="contact-type">Correo</span><strong>joanbru008@gmail.com</strong><span class="contact-arrow">↗</span></a><a class="contact-link" href="https://instagram.com/joan_brru" target="_blank" rel="noopener"><span class="contact-type">Instagram</span><strong>@joan_brru</strong><span class="contact-arrow">↗</span></a></div></section>`;
+  preview.innerHTML = `<section class="contact-screen"><div class="contact-kicker">${PROFILE.contactKicker}</div><h1>Hablemos.</h1><p class="contact-intro">${PROFILE.contactIntro}</p><div class="contact-links"><a class="contact-link" href="mailto:${PROFILE.email}"><span class="contact-type">Correo</span><strong>${PROFILE.email}</strong><span class="contact-arrow">↗</span></a><a class="contact-link" href="${PROFILE.instagramUrl}" target="_blank" rel="noopener"><span class="contact-type">Instagram</span><strong>${PROFILE.instagramHandle}</strong><span class="contact-arrow">↗</span></a></div></section>`;
 }
 
 document.querySelectorAll(".side-item[data-view]").forEach(button => {
