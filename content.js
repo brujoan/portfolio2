@@ -1,6 +1,15 @@
 // Contenido editable del portfolio.
-// Aquí puedes cambiar títulos, descripciones, aportaciones y el orden de las imágenes
+// Aquí puedes cambiar perfil, títulos, descripciones, aportaciones y el orden de las imágenes
 // sin tocar la lógica de la web.
+
+window.PORTFOLIO_PROFILE = {
+  name: "JOAN BRÚ",
+  email: "joanbru008@gmail.com",
+  instagramHandle: "@joanbruu",
+  instagramUrl: "https://www.instagram.com/joanbruu/",
+  contactKicker: "JOAN BRÚ / AUDIOVISUAL",
+  contactIntro: "Foto, vídeo, postproducción, música o una idea que todavía no tiene forma."
+};
 
 window.PORTFOLIO_CONTENT = {
   proyectos: {
