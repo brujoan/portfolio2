@@ -2,6 +2,16 @@
 
 Portfolio audiovisual con interfaz inspirada en Finder.
 
+## Estructura
+
+- `content.js`: contenido editable del portfolio (títulos, descripciones, aportaciones y orden de imágenes).
+- `app.js`: lógica e interacción de la web.
+- `styles.css`: estilos visuales.
+- `index.html`: estructura principal y carga de scripts.
+- `assets/`: imágenes, vídeo y audio.
+
+Para cambiar textos o el orden de una galería, edita `content.js`. No hace falta tocar `app.js`.
+
 ## Contenido
 
 - Proyectos
@@ -29,7 +39,7 @@ Portfolio audiovisual con interfaz inspirada en Finder.
 Desde Terminal:
 
 ```bash
-cd ruta/a/finder-portfolio
+cd ruta/al/proyecto
 python3 -m http.server 8000
 ```
 
@@ -49,5 +59,3 @@ La web busca primero estas cuatro miniaturas locales:
 - `assets/images/mixunets/04.jpg`
 
 Si no están, usa las miniaturas oficiales de YouTube como fallback.
-
-El nombre JOAN BRÚ de la esquina superior izquierda enlaza a Instagram.
