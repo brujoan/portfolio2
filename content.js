@@ -278,10 +278,10 @@ window.PORTFOLIO_CONTENT = {
         audio: "assets/audio/musica-inmobiliaria.wav"
       },
       {
-        id: "war",
+        id: "IMPACTKD",
         title: "War",
         meta: "01:30 · BSO evento",
-        description: "Banda sonora para una velada de MMA.",
+        description: "Banda sonora para una velada de MMA en el gimnasio IMPACTKD.",
         contributions: ["BSO"],
         kind: "audio",
         audio: "assets/audio/war.wav"
