@@ -1,10 +1,11 @@
 <!doctype html>
-<html lang="es">
+<html lang="ca">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Finder Portfolio</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="language.css" />
 </head>
 <body>
   <main class="finder-window">
@@ -14,8 +15,8 @@
       </div>
 
       <div class="nav-controls">
-        <button class="icon-btn" id="backBtn" aria-label="Atrás">‹</button>
-        <button class="icon-btn" id="forwardBtn" aria-label="Adelante">›</button>
+        <button class="icon-btn" id="backBtn" aria-label="Enrere">‹</button>
+        <button class="icon-btn" id="forwardBtn" aria-label="Endavant">›</button>
       </div>
 
       <div class="title-block">
@@ -27,9 +28,16 @@
         <button class="icon-btn">▦</button>
         <button class="icon-btn">☷</button>
         <button class="icon-btn active">▥</button>
+
+        <div class="language-switcher" role="group" aria-label="Idioma">
+          <button class="language-btn active" type="button" data-lang="ca" aria-pressed="true">CA</button>
+          <button class="language-btn" type="button" data-lang="es" aria-pressed="false">ES</button>
+          <button class="language-btn" type="button" data-lang="en" aria-pressed="false">EN</button>
+        </div>
+
         <div class="search-wrap">
           <span>⌕</span>
-          <input id="searchInput" placeholder="Buscar proyectos..." />
+          <input id="searchInput" placeholder="Cerca projectes..." />
         </div>
       </div>
     </header>
@@ -44,37 +52,37 @@
         </div>
 
         <nav>
-          <p>Favoritos</p>
-          <button class="side-item active" data-view="proyectos"><span>✦</span> Proyectos</button>
-          <button class="side-item" data-view="vertical"><span>🎞️</span> Vertical</button>
-          <button class="side-item" data-view="fotos"><span>📷</span> Fotos</button>
-          <button class="side-item" data-view="retransmisiones"><span>◉</span> Retransmisiones</button>
-          <button class="side-item" data-view="musica"><span>♫</span> Producción musical</button>
+          <p data-ui="favorites">Preferits</p>
+          <button class="side-item active" data-view="proyectos"><span class="side-icon">✦</span><span class="side-label">Projectes</span></button>
+          <button class="side-item" data-view="vertical"><span class="side-icon">🎞️</span><span class="side-label">Vertical</span></button>
+          <button class="side-item" data-view="fotos"><span class="side-icon">📷</span><span class="side-label">Fotos</span></button>
+          <button class="side-item" data-view="retransmisiones"><span class="side-icon">◉</span><span class="side-label">Retransmissions esportives</span></button>
+          <button class="side-item" data-view="musica"><span class="side-icon">♫</span><span class="side-label">Producció musical</span></button>
 
-          <p>Biblioteca</p>
-          <button class="side-item" data-view="todo"><span>◉</span> Todo</button>
-          <button class="side-item" data-view="contacto"><span>↗</span> Contacto</button>
+          <p data-ui="library">Biblioteca</p>
+          <button class="side-item" data-view="todo"><span class="side-icon">◉</span><span class="side-label">Tot</span></button>
+          <button class="side-item" data-view="contacto"><span class="side-icon">↗</span><span class="side-label">Contacte</span></button>
         </nav>
 
-        <div class="sidebar-note">Ideas, imágenes y movimiento.</div>
+        <div class="sidebar-note" data-ui="sidebar-note">Idees, imatges i moviment.</div>
       </aside>
 
       <section class="columns">
         <div class="browser-column folders-column">
-          <div class="column-header">Categorías</div>
+          <div class="column-header" data-ui="categories">Categories</div>
           <div id="folderList"></div>
         </div>
 
         <div class="browser-column items-column">
-          <div class="column-header" id="itemHeader">Contenido</div>
+          <div class="column-header" id="itemHeader">Contingut</div>
           <div id="itemList"></div>
         </div>
 
         <section class="preview-panel" id="previewPanel">
           <div class="preview-empty">
             <div class="empty-icon">⌘</div>
-            <h2>Selecciona una pieza</h2>
-            <p>El contenido aparecerá aquí.</p>
+            <h2>Selecciona una peça</h2>
+            <p>El contingut apareixerà aquí.</p>
           </div>
         </section>
       </section>
@@ -82,7 +90,7 @@
 
     <footer class="statusbar">
       <div id="breadcrumb">Macintosh HD › Portfolio</div>
-      <div id="statusText">3 carpetas</div>
+      <div id="statusText">3 carpetes</div>
     </footer>
   </main>
 
