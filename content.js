@@ -424,7 +424,7 @@ window.PORTFOLIO_CONTENT = {
   },
 
   retransmisiones: {
-    label: L("Retransmissions esportives", "Retransmisiones deportivas", "Sports broadcasts"),
+    label: L("Retransmissions", "Retransmisiones", "Broadcasts"),
     icon: "◉",
     type: "collection",
     items: [
