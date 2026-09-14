@@ -2,10 +2,11 @@
 <html lang="ca">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>Finder Portfolio</title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="language.css" />
+  <link rel="stylesheet" href="mobile.css" />
 </head>
 <body>
   <main class="finder-window">
@@ -78,6 +79,8 @@
           <div id="itemList"></div>
         </div>
 
+        <button class="mobile-back" id="mobileBackBtn" type="button" aria-label="Enrere">‹</button>
+
         <section class="preview-panel" id="previewPanel">
           <div class="preview-empty">
             <div class="empty-icon">⌘</div>
@@ -96,5 +99,6 @@
 
   <script src="content.js"></script>
   <script src="app.js"></script>
+  <script src="mobile.js"></script>
 </body>
 </html>
