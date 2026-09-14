@@ -5,9 +5,11 @@ Portfolio audiovisual con interfaz inspirada en Finder.
 ## Estructura
 
 - `content.js`: contenido editable del portfolio. Aquí están el perfil/contacto, títulos, descripciones, aportaciones, traducciones y el orden de las imágenes.
-- `app.js`: lógica e interacción de la web, incluido el cambio de idioma.
-- `styles.css`: estilos visuales principales.
+- `app.js`: lógica e interacción principal de la web, incluido el cambio de idioma.
+- `styles.css`: estilos visuales principales de escritorio.
 - `language.css`: estilos del selector CA / ES / EN.
+- `mobile.css`: layout responsive específico para móvil.
+- `mobile.js`: navegación móvil entre listado y vista de cada pieza.
 - `index.html`: estructura principal y carga de scripts.
 - `assets/`: imágenes, vídeo y audio.
 
@@ -28,6 +30,19 @@ En `content.js`, los textos traducibles usan esta forma:
 ```js
 L("Text en català", "Texto en español", "Text in English")
 ```
+
+## Versión móvil
+
+Por debajo de 820 px la misma web cambia automáticamente a una interfaz adaptada a móvil:
+
+- categorías en una barra horizontal táctil;
+- listado de piezas a ancho completo;
+- cada proyecto se abre en una vista propia con botón de volver;
+- carruseles optimizados para swipe;
+- vídeo vertical, YouTube, audio y contacto adaptados a pantalla pequeña;
+- soporte para áreas seguras de iPhone mediante `viewport-fit=cover`.
+
+La versión de escritorio permanece independiente de estos estilos mediante `mobile.css` y `mobile.js`.
 
 ## Contenido
 
