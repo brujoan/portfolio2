@@ -3,6 +3,10 @@
   const mobileQuery = window.matchMedia("(max-width: 820px)");
   const backButton = document.getElementById("mobileBackBtn");
   const itemListElement = document.getElementById("itemList");
+  const mobileNav = document.querySelector(".sidebar nav");
+  const contactButton = document.querySelector('.side-item[data-view="contacto"]');
+  const contactOriginalPrevious = contactButton?.previousElementSibling || null;
+  let mobileHomepageInitialized = false;
 
   const backLabels = {
     ca: "Enrere",
@@ -21,6 +25,28 @@
     backButton.setAttribute("title", label);
   }
 
+  function setContactFirstOnMobile() {
+    if (!contactButton || !mobileNav) return;
+
+    if (isMobile()) {
+      if (mobileNav.firstElementChild !== contactButton) {
+        mobileNav.insertBefore(contactButton, mobileNav.firstElementChild);
+      }
+      return;
+    }
+
+    // Al volver a escritorio, recupera el orden original del menú.
+    if (contactOriginalPrevious?.parentElement === mobileNav) {
+      contactOriginalPrevious.after(contactButton);
+    }
+  }
+
+  function setBackButtonVisibility() {
+    if (!backButton) return;
+    // Contacto es la portada móvil: no necesita botón de volver.
+    backButton.style.display = isMobile() && currentView === "contact" ? "none" : "";
+  }
+
   function scrollMobileTop() {
     requestAnimationFrame(() => {
       window.scrollTo({ top: 0, left: 0, behavior: "auto" });
@@ -30,11 +56,13 @@
   function openMobilePreview() {
     if (!isMobile()) return;
     document.body.classList.add("mobile-preview-open");
+    setBackButtonVisibility();
     scrollMobileTop();
   }
 
   function hideMobilePreview() {
     document.body.classList.remove("mobile-preview-open");
+    setBackButtonVisibility();
   }
 
   function closeMobilePreview() {
@@ -50,19 +78,35 @@
     else renderSectionEmpty();
 
     updateBreadcrumb();
+    setBackButtonVisibility();
     scrollMobileTop();
   }
 
   // La fuente de verdad es el estado de app.js. Así no dependemos de que
   // el click llegue en un orden concreto en Safari/iOS.
   function syncMobileState() {
+    setContactFirstOnMobile();
+
     if (!isMobile()) {
       hideMobilePreview();
+      setBackButtonVisibility();
       return;
     }
 
     if (currentView === "contact" || currentItem) openMobilePreview();
     else hideMobilePreview();
+
+    setBackButtonVisibility();
+  }
+
+  function initializeMobileHomepage() {
+    if (!isMobile() || mobileHomepageInitialized) return;
+    mobileHomepageInitialized = true;
+
+    // En móvil, Contacto funciona como portada inicial.
+    showContact();
+    setContactFirstOnMobile();
+    syncMobileState();
   }
 
   // Fallback inmediato tras cualquier interacción relevante.
@@ -99,6 +143,11 @@
 
   const onViewportChange = () => {
     setBackLabel();
+    setContactFirstOnMobile();
+
+    if (isMobile()) initializeMobileHomepage();
+    else mobileHomepageInitialized = false;
+
     syncMobileState();
   };
 
@@ -106,5 +155,7 @@
   else mobileQuery.addListener(onViewportChange);
 
   setBackLabel();
+  setContactFirstOnMobile();
+  initializeMobileHomepage();
   syncMobileState();
 })();
