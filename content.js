@@ -55,7 +55,7 @@ window.PORTFOLIO_UI = {
     content: "Contenido",
     folders: "Carpetas",
     searchPlaceholder: "Buscar proyectos...",
-    sidebarNote: "Barcelona, Cataluña, Espa´a.",
+    sidebarNote: "Barcelona, Cataluña, España.",
     contactMethods: "Instagram y correo",
     twoContactMethods: "2 vías de contacto",
     element: "elemento",
