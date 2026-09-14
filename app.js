@@ -1,9 +1,18 @@
 const DATA = window.PORTFOLIO_CONTENT;
 const PROFILE = window.PORTFOLIO_PROFILE;
+const UI = window.PORTFOLIO_UI;
+const LANGUAGES = window.PORTFOLIO_LANGUAGES;
+const DEFAULT_LANGUAGE = window.PORTFOLIO_DEFAULT_LANGUAGE || "ca";
 
-if (!DATA || !PROFILE) {
+if (!DATA || !PROFILE || !UI || !LANGUAGES) {
   throw new Error("No se ha cargado correctamente content.js");
 }
+
+let currentLanguage = DEFAULT_LANGUAGE;
+try {
+  const savedLanguage = localStorage.getItem("portfolio-language");
+  if (savedLanguage && LANGUAGES[savedLanguage]) currentLanguage = savedLanguage;
+} catch (_) {}
 
 let currentView = "folder";
 let currentSection = "proyectos";
@@ -19,10 +28,23 @@ const breadcrumb = document.getElementById("breadcrumb");
 const statusText = document.getElementById("statusText");
 const searchInput = document.getElementById("searchInput");
 const brandLink = document.querySelector(".brand a");
+const languageSwitcher = document.querySelector(".language-switcher");
 
-if (brandLink) {
-  brandLink.href = PROFILE.instagramUrl;
-  brandLink.textContent = PROFILE.name;
+function tr(value) {
+  if (value == null) return "";
+  if (typeof value === "object" && !Array.isArray(value)) {
+    return value[currentLanguage] ?? value[DEFAULT_LANGUAGE] ?? value.es ?? value.en ?? "";
+  }
+  return String(value);
+}
+
+function ui() {
+  return UI[currentLanguage] || UI[DEFAULT_LANGUAGE];
+}
+
+function elementCount(count) {
+  const label = count === 1 ? ui().element : ui().elements;
+  return `${count} ${label}`;
 }
 
 function sectionItems(key) {
@@ -50,6 +72,46 @@ function allItems() {
   );
 }
 
+function applyStaticTranslations() {
+  const text = ui();
+  document.documentElement.lang = currentLanguage;
+
+  if (brandLink) {
+    brandLink.href = PROFILE.instagramUrl;
+    brandLink.textContent = PROFILE.name;
+  }
+
+  const favoritesLabel = document.querySelector('[data-ui="favorites"]');
+  const libraryLabel = document.querySelector('[data-ui="library"]');
+  const categoriesHeader = document.querySelector('[data-ui="categories"]');
+  const sidebarNote = document.querySelector('[data-ui="sidebar-note"]');
+
+  if (favoritesLabel) favoritesLabel.textContent = text.favorites;
+  if (libraryLabel) libraryLabel.textContent = text.library;
+  if (categoriesHeader) categoriesHeader.textContent = text.categories;
+  if (sidebarNote) sidebarNote.textContent = text.sidebarNote;
+  if (searchInput) searchInput.placeholder = text.searchPlaceholder;
+
+  document.querySelectorAll(".side-item[data-view]").forEach(button => {
+    const label = button.querySelector(".side-label");
+    if (!label) return;
+    const view = button.dataset.view;
+
+    if (DATA[view]) label.textContent = tr(DATA[view].label);
+    else if (view === "todo") label.textContent = text.all;
+    else if (view === "contacto") label.textContent = text.contact;
+  });
+
+  if (languageSwitcher) {
+    languageSwitcher.setAttribute("aria-label", text.language);
+    languageSwitcher.querySelectorAll("[data-lang]").forEach(button => {
+      const active = button.dataset.lang === currentLanguage;
+      button.classList.toggle("active", active);
+      button.setAttribute("aria-pressed", String(active));
+    });
+  }
+}
+
 function setSidebarActive(view) {
   document.querySelectorAll(".side-item").forEach(button => button.classList.remove("active"));
   document.querySelector(`.side-item[data-view="${view}"]`)?.classList.add("active");
@@ -59,7 +121,7 @@ function renderFolderColumn() {
   folderList.innerHTML = "";
 
   if (currentView === "contact") {
-    folderList.innerHTML = '<div class="column-empty-label">Contacto</div>';
+    folderList.innerHTML = `<div class="column-empty-label">${ui().contact}</div>`;
     return;
   }
 
@@ -68,8 +130,8 @@ function renderFolderColumn() {
       <div class="row selected context-folder">
         <div class="folder-icon">◉</div>
         <div class="row-copy">
-          <div class="row-title">Todo</div>
-          <div class="row-meta">${allItems().length} elementos</div>
+          <div class="row-title">${ui().all}</div>
+          <div class="row-meta">${elementCount(allItems().length)}</div>
         </div>
       </div>`;
     return;
@@ -82,8 +144,8 @@ function renderFolderColumn() {
       row.innerHTML = `
         <div class="folder-icon">${folder.icon}</div>
         <div class="row-copy">
-          <div class="row-title">${folder.label}</div>
-          <div class="row-meta">${folder.items.length} elementos</div>
+          <div class="row-title">${tr(folder.label)}</div>
+          <div class="row-meta">${elementCount(folder.items.length)}</div>
         </div>
         <div class="chevron">›</div>`;
 
@@ -93,8 +155,8 @@ function renderFolderColumn() {
         renderFolderColumn();
         renderItems(searchInput.value);
         renderSectionEmpty();
-        title.textContent = folder.label;
-        breadcrumb.textContent = `Macintosh HD › Portfolio › Fotos › ${folder.label}`;
+        title.textContent = tr(folder.label);
+        updateBreadcrumb();
       };
 
       folderList.appendChild(row);
@@ -108,8 +170,8 @@ function renderFolderColumn() {
     row.innerHTML = `
       <div class="folder-icon">${section.icon}</div>
       <div class="row-copy">
-        <div class="row-title">${section.label}</div>
-        <div class="row-meta">${sectionItems(key).length} elementos</div>
+        <div class="row-title">${tr(section.label)}</div>
+        <div class="row-meta">${elementCount(sectionItems(key).length)}</div>
       </div>
       <div class="chevron">›</div>`;
 
@@ -130,7 +192,7 @@ function thumbFor(item) {
           <img
             src="${thumb.local}"
             data-fallback="${thumb.remote}"
-            alt="Portada ${index + 1}"
+            alt="${ui().photoAlt} ${index + 1}"
             draggable="false"
             onerror="if(this.dataset.fallback){this.onerror=null;this.src=this.dataset.fallback;}"
           >
@@ -160,7 +222,7 @@ function visibleItems() {
       return Object.entries(DATA.fotos.folders).map(([key, folder]) => ({
         id: `folder-${key}`,
         title: folder.label,
-        meta: `${folder.items.length} elementos`,
+        meta: elementCount(folder.items.length),
         description: "",
         kind: "folder",
         folderKey: key,
@@ -179,15 +241,16 @@ function renderItems(filter = "") {
   const query = filter.trim().toLowerCase();
 
   if (currentView === "contact") {
-    itemHeader.textContent = "Contacto";
-    itemList.innerHTML = '<div class="contact-list-note"><span>↗</span><strong>Contacto</strong><small>Instagram y correo</small></div>';
-    statusText.textContent = "2 vías de contacto";
+    itemHeader.textContent = ui().contact;
+    itemList.innerHTML = `<div class="contact-list-note"><span>↗</span><strong>${ui().contact}</strong><small>${ui().contactMethods}</small></div>`;
+    statusText.textContent = ui().twoContactMethods;
     return;
   }
 
   const items = visibleItems().filter(item =>
     [item.title, item.meta, item.description, item.sectionLabel, item.photoFolderLabel]
       .filter(Boolean)
+      .map(tr)
       .join(" ")
       .toLowerCase()
       .includes(query)
@@ -195,10 +258,10 @@ function renderItems(filter = "") {
 
   itemHeader.textContent =
     currentView === "all"
-      ? "Todo"
+      ? ui().all
       : currentSection === "fotos"
-        ? (currentPhotoFolder ? "Contenido" : "Carpetas")
-        : DATA[currentSection].label;
+        ? (currentPhotoFolder ? ui().content : ui().folders)
+        : tr(DATA[currentSection].label);
 
   items.forEach(item => {
     const row = document.createElement("div");
@@ -206,8 +269,8 @@ function renderItems(filter = "") {
     row.innerHTML = `
       ${thumbFor(item)}
       <div class="row-copy">
-        <div class="row-title">${item.title}</div>
-        <div class="row-meta">${currentView === "all" && item.sectionLabel ? item.sectionLabel + " · " : ""}${item.meta}</div>
+        <div class="row-title">${tr(item.title)}</div>
+        <div class="row-meta">${currentView === "all" && item.sectionLabel ? tr(item.sectionLabel) + " · " : ""}${tr(item.meta)}</div>
       </div>
       <div class="chevron">›</div>`;
 
@@ -218,8 +281,8 @@ function renderItems(filter = "") {
         renderFolderColumn();
         renderItems(searchInput.value);
         renderSectionEmpty();
-        title.textContent = DATA.fotos.folders[currentPhotoFolder].label;
-        breadcrumb.textContent = `Macintosh HD › Portfolio › Fotos › ${DATA.fotos.folders[currentPhotoFolder].label}`;
+        title.textContent = tr(DATA.fotos.folders[currentPhotoFolder].label);
+        updateBreadcrumb();
       } else {
         selectItem(item);
       }
@@ -228,7 +291,7 @@ function renderItems(filter = "") {
     itemList.appendChild(row);
   });
 
-  statusText.textContent = `${items.length} elementos`;
+  statusText.textContent = elementCount(items.length);
 }
 
 function selectSection(key) {
@@ -239,49 +302,49 @@ function selectSection(key) {
   if (key === "fotos") currentPhotoFolder = null;
 
   setSidebarActive(key);
-  title.textContent = DATA[key].label;
-  breadcrumb.textContent = `Macintosh HD › Portfolio › ${DATA[key].label}`;
+  title.textContent = tr(DATA[key].label);
   renderFolderColumn();
   renderItems(searchInput.value);
   renderSectionEmpty();
+  updateBreadcrumb();
 }
 
 function showAll() {
   currentView = "all";
   currentItem = null;
   setSidebarActive("todo");
-  title.textContent = "Todo";
-  breadcrumb.textContent = "Macintosh HD › Portfolio › Todo";
+  title.textContent = ui().all;
   renderFolderColumn();
   renderItems(searchInput.value);
   renderAllSummary();
+  updateBreadcrumb();
 }
 
 function showContact() {
   currentView = "contact";
   currentItem = null;
   setSidebarActive("contacto");
-  title.textContent = "Contacto";
-  breadcrumb.textContent = "Macintosh HD › Portfolio › Contacto";
+  title.textContent = ui().contact;
   renderFolderColumn();
   renderItems();
   renderContact();
+  updateBreadcrumb();
 }
 
 function renderSectionEmpty() {
   const section = DATA[currentSection];
   const subTitle =
     currentSection === "fotos"
-      ? (currentPhotoFolder ? DATA.fotos.folders[currentPhotoFolder].label : "Fotos")
-      : section.label;
+      ? (currentPhotoFolder ? tr(DATA.fotos.folders[currentPhotoFolder].label) : tr(DATA.fotos.label))
+      : tr(section.label);
 
   preview.innerHTML = `
     <div class="preview-empty">
       <div class="empty-icon">${section.icon}</div>
       <h2>${subTitle}</h2>
       <p>${currentSection === "fotos" && !currentPhotoFolder
-        ? "Selecciona una carpeta en la columna central."
-        : "Selecciona una pieza para verla aquí."}</p>
+        ? ui().selectFolder
+        : ui().selectPiece}</p>
     </div>`;
 }
 
@@ -289,14 +352,33 @@ function selectItem(item) {
   currentItem = item;
   renderItems(searchInput.value);
   renderPreview(item);
+  updateBreadcrumb();
+}
+
+function updateBreadcrumb() {
+  if (currentView === "contact") {
+    breadcrumb.textContent = `Macintosh HD › Portfolio › ${ui().contact}`;
+    return;
+  }
 
   if (currentView === "all") {
-    breadcrumb.textContent = `Macintosh HD › Portfolio › Todo › ${item.title}`;
-  } else if (currentSection === "fotos") {
-    breadcrumb.textContent = `Macintosh HD › Portfolio › Fotos › ${DATA.fotos.folders[currentPhotoFolder].label} › ${item.title}`;
-  } else {
-    breadcrumb.textContent = `Macintosh HD › Portfolio › ${DATA[currentSection].label} › ${item.title}`;
+    breadcrumb.textContent = currentItem
+      ? `Macintosh HD › Portfolio › ${ui().all} › ${tr(currentItem.title)}`
+      : `Macintosh HD › Portfolio › ${ui().all}`;
+    return;
   }
+
+  if (currentSection === "fotos") {
+    const parts = ["Macintosh HD", "Portfolio", tr(DATA.fotos.label)];
+    if (currentPhotoFolder) parts.push(tr(DATA.fotos.folders[currentPhotoFolder].label));
+    if (currentItem) parts.push(tr(currentItem.title));
+    breadcrumb.textContent = parts.join(" › ");
+    return;
+  }
+
+  const parts = ["Macintosh HD", "Portfolio", tr(DATA[currentSection].label)];
+  if (currentItem) parts.push(tr(currentItem.title));
+  breadcrumb.textContent = parts.join(" › ");
 }
 
 function contributionHTML(item) {
@@ -304,28 +386,28 @@ function contributionHTML(item) {
 
   return `
     <section class="contrib">
-      <div class="contrib-label">APORTACIÓN</div>
-      <div class="contrib-list">${item.contributions.map(value => `<span>${value}</span>`).join("")}</div>
+      <div class="contrib-label">${ui().contribution}</div>
+      <div class="contrib-list">${item.contributions.map(value => `<span>${tr(value)}</span>`).join("")}</div>
     </section>`;
 }
 
 function details(item) {
   return `
-    <h1 class="preview-title">${item.title}</h1>
-    <p class="preview-subtitle">${item.meta}</p>
-    <p class="preview-copy">${item.description}</p>
+    <h1 class="preview-title">${tr(item.title)}</h1>
+    <p class="preview-subtitle">${tr(item.meta)}</p>
+    <p class="preview-copy">${tr(item.description)}</p>
     ${contributionHTML(item)}`;
 }
 
 function carousel(images) {
   if (!images?.length) {
-    return '<div class="missing-media">Fotos pendientes de incorporar</div>';
+    return `<div class="missing-media">${ui().missingPhotos}</div>`;
   }
 
   return `
     <div class="insta-carousel-wrap">
       <div class="insta-carousel">
-        ${images.map((src, index) => `<div class="insta-slide"><img src="${src}" alt="Foto ${index + 1}" draggable="false"></div>`).join("")}
+        ${images.map((src, index) => `<div class="insta-slide"><img src="${src}" alt="${ui().photoAlt} ${index + 1}" draggable="false"></div>`).join("")}
       </div>
 
       <div class="carousel-dots">
@@ -334,7 +416,7 @@ function carousel(images) {
 
       <div class="folder-preview-strip">
         ${images.map((src, index) => `
-          <button class="folder-preview-thumb ${index === 0 ? "active" : ""}" data-index="${index}" aria-label="Ver foto ${index + 1}">
+          <button class="folder-preview-thumb ${index === 0 ? "active" : ""}" data-index="${index}" aria-label="${ui().viewPhoto} ${index + 1}">
             <img src="${src}" alt="" draggable="false">
           </button>
         `).join("")}
@@ -356,7 +438,7 @@ function renderPreview(item) {
 
   if (item.kind === "youtube") {
     const frames = [0, 1, 2, 3];
-    preview.innerHTML = `<a class="youtube-preview" href="${item.externalUrl}" target="_blank" rel="noopener"><img id="ytAnimated" src="https://img.youtube.com/vi/${item.youtubeId}/0.jpg" alt="${item.title}"><div class="youtube-play">▶</div><div class="youtube-open">Ver vídeo ↗</div></a>${details(item)}`;
+    preview.innerHTML = `<a class="youtube-preview" href="${item.externalUrl}" target="_blank" rel="noopener"><img id="ytAnimated" src="https://img.youtube.com/vi/${item.youtubeId}/0.jpg" alt="${tr(item.title)}"><div class="youtube-play">▶</div><div class="youtube-open">${ui().viewVideo} ↗</div></a>${details(item)}`;
 
     let frameIndex = 0;
     const image = document.getElementById("ytAnimated");
@@ -379,7 +461,7 @@ function renderPreview(item) {
             <img
               src="${thumb.local}"
               data-fallback="${thumb.remote}"
-              alt="Portada vídeo ${index + 1} de @mixunets"
+              alt="${ui().photoAlt} ${index + 1} · @mixunets"
               draggable="false"
               onerror="if(this.dataset.fallback){this.onerror=null;this.src=this.dataset.fallback;}"
             >
@@ -387,11 +469,11 @@ function renderPreview(item) {
         </div>
         <div class="channel-overlay">
           <div>
-            <small>CONTENIDO PERSONAL / OCIO</small>
+            <small>${ui().channelKicker}</small>
             <h2>@mixunets</h2>
-            <p>Vídeos y contenido personal.</p>
+            <p>${ui().channelText}</p>
           </div>
-          <span>Visitar canal ↗</span>
+          <span>${ui().visitChannel} ↗</span>
         </div>
       </a>
       ${details(item)}`;
@@ -400,7 +482,7 @@ function renderPreview(item) {
 
   if (item.kind === "audio") {
     const audioType = item.audio.toLowerCase().endsWith(".wav") ? "audio/wav" : "audio/mpeg";
-    preview.innerHTML = `<section class="audio-preview"><div class="audio-art"><div class="audio-art-inner"><span class="audio-note">♫</span><small>JOAN BRÚ / ORIGINAL SCORE</small></div></div><div class="audio-player-wrap"><audio controls preload="metadata"><source src="${item.audio}" type="${audioType}"></audio></div></section>${details(item)}`;
+    preview.innerHTML = `<section class="audio-preview"><div class="audio-art"><div class="audio-art-inner"><span class="audio-note">♫</span><small>${ui().originalScore}</small></div></div><div class="audio-player-wrap"><audio controls preload="metadata"><source src="${item.audio}" type="${audioType}"></audio></div></section>${details(item)}`;
   }
 }
 
@@ -503,11 +585,57 @@ function wireCarousel() {
 }
 
 function renderAllSummary() {
-  preview.innerHTML = `<section class="all-summary"><div class="summary-kicker">PORTFOLIO / ÍNDICE</div><h1>Todo.</h1><p class="summary-intro">Todo el material del portfolio en un único lugar. Selecciona cualquier pieza de la columna central y se abrirá aquí, sin salir de Todo.</p><div class="summary-grid">${Object.entries(DATA).map(([key, section]) => `<div class="summary-card static"><span class="summary-icon">${section.icon}</span><span><strong>${section.label}</strong><small>${sectionItems(key).length} elementos</small></span></div>`).join("")}</div></section>`;
+  preview.innerHTML = `<section class="all-summary"><div class="summary-kicker">${ui().summaryKicker}</div><h1>${ui().summaryTitle}</h1><p class="summary-intro">${ui().summaryIntro}</p><div class="summary-grid">${Object.entries(DATA).map(([key, section]) => `<div class="summary-card static"><span class="summary-icon">${section.icon}</span><span><strong>${tr(section.label)}</strong><small>${elementCount(sectionItems(key).length)}</small></span></div>`).join("")}</div></section>`;
 }
 
 function renderContact() {
-  preview.innerHTML = `<section class="contact-screen"><div class="contact-kicker">${PROFILE.contactKicker}</div><h1>Hablemos.</h1><p class="contact-intro">${PROFILE.contactIntro}</p><div class="contact-links"><a class="contact-link" href="mailto:${PROFILE.email}"><span class="contact-type">Correo</span><strong>${PROFILE.email}</strong><span class="contact-arrow">↗</span></a><a class="contact-link" href="${PROFILE.instagramUrl}" target="_blank" rel="noopener"><span class="contact-type">Instagram</span><strong>${PROFILE.instagramHandle}</strong><span class="contact-arrow">↗</span></a></div></section>`;
+  preview.innerHTML = `<section class="contact-screen"><div class="contact-kicker">${PROFILE.contactKicker}</div><h1>${ui().contactTitle}</h1><p class="contact-intro">${tr(PROFILE.contactIntro)}</p><div class="contact-links"><a class="contact-link" href="mailto:${PROFILE.email}"><span class="contact-type">${ui().email}</span><strong>${PROFILE.email}</strong><span class="contact-arrow">↗</span></a><a class="contact-link" href="${PROFILE.instagramUrl}" target="_blank" rel="noopener"><span class="contact-type">Instagram</span><strong>${PROFILE.instagramHandle}</strong><span class="contact-arrow">↗</span></a></div></section>`;
+}
+
+function refreshCurrentView() {
+  applyStaticTranslations();
+
+  if (currentView === "contact") {
+    setSidebarActive("contacto");
+    title.textContent = ui().contact;
+    renderFolderColumn();
+    renderItems();
+    renderContact();
+    updateBreadcrumb();
+    return;
+  }
+
+  if (currentView === "all") {
+    setSidebarActive("todo");
+    title.textContent = ui().all;
+    renderFolderColumn();
+    renderItems(searchInput.value);
+    if (currentItem) renderPreview(currentItem);
+    else renderAllSummary();
+    updateBreadcrumb();
+    return;
+  }
+
+  setSidebarActive(currentSection);
+  title.textContent = currentSection === "fotos" && currentPhotoFolder
+    ? tr(DATA.fotos.folders[currentPhotoFolder].label)
+    : tr(DATA[currentSection].label);
+  renderFolderColumn();
+  renderItems(searchInput.value);
+  if (currentItem) renderPreview(currentItem);
+  else renderSectionEmpty();
+  updateBreadcrumb();
+}
+
+function setLanguage(language) {
+  if (!LANGUAGES[language] || language === currentLanguage) return;
+  currentLanguage = language;
+
+  try {
+    localStorage.setItem("portfolio-language", language);
+  } catch (_) {}
+
+  refreshCurrentView();
 }
 
 document.querySelectorAll(".side-item[data-view]").forEach(button => {
@@ -519,10 +647,15 @@ document.querySelectorAll(".side-item[data-view]").forEach(button => {
   };
 });
 
+document.querySelectorAll("[data-lang]").forEach(button => {
+  button.addEventListener("click", () => setLanguage(button.dataset.lang));
+});
+
 searchInput.addEventListener("input", event => renderItems(event.target.value));
 
 document.addEventListener("dragstart", event => {
   if (event.target.tagName === "IMG") event.preventDefault();
 });
 
+applyStaticTranslations();
 selectSection("proyectos");
