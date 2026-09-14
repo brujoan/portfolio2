@@ -39,7 +39,7 @@ window.PORTFOLIO_CONTENT = {
       },
       {
         id: "ginpasf-proyecto",
-        title: "GINPASF",
+        title: "Documental GINPASF",
         meta: "Documental · Actividades paranormales",
         description: "Docu-reportaje para GINPASF (Grupo de Investigación Paranormal de Sant Feliu) sobre la leyenda de la Dama de Blanco de Fontcaldetes.",
         contributions: ["Localización", "Producción", "Operación de cámara", "Técnico de sonido", "BSO", "Postproducción"],
@@ -51,7 +51,7 @@ window.PORTFOLIO_CONTENT = {
         id: "mixunets",
         title: "Mixunets",
         meta: "YouTube · Contenido personal",
-        description: "Contenido personal de ocio.",
+        description: "Canal de youtube principalmente de viaje, mi contenido más personal y puro.",
         contributions: [],
         kind: "channel",
         externalUrl: "https://www.youtube.com/@mixunets",
@@ -70,11 +70,11 @@ window.PORTFOLIO_CONTENT = {
     icon: "🎞️",
     type: "collection",
     items: [
-      { id: "c80gear", title: "Canon C80 Rig", meta: "00:41 · Vertical", description: "Pieza vertical audiovisual.", contributions: [], kind: "video", video: "assets/videos/c80gear.mp4", poster: "assets/images/video-posters/c80gear.jpg", dimensions: "720×1280" },
-      { id: "cadires", title: "Prop Chairs", meta: "00:05 · Vertical", description: "Pieza vertical audiovisual.", contributions: [], kind: "video", video: "assets/videos/cadires.mp4", poster: "assets/images/video-posters/cadires.jpg", dimensions: "720×1280" },
-      { id: "fxlion", title: "FXLion Nano Pro Unboxing", meta: "00:26 · Vertical", description: "Pieza vertical audiovisual.", contributions: [], kind: "video", video: "assets/videos/fxlion.mp4", poster: "assets/images/video-posters/fxlion.jpg", dimensions: "720×1280" },
-      { id: "studio1-koi", title: "Movistar KOI Photoshoot Making Of", meta: "00:21 · Vertical", description: "Pieza vertical audiovisual.", contributions: [], kind: "video", video: "assets/videos/studio1-koi.mp4", poster: "assets/images/video-posters/studio1-koi.jpg", dimensions: "720×1280" },
-      { id: "studio2-irene", title: "Model Photoshoot Making Of", meta: "00:18 · Vertical", description: "Pieza vertical audiovisual.", contributions: [], kind: "video", video: "assets/videos/studio2-irene.mp4", poster: "assets/images/video-posters/studio2-irene.jpg", dimensions: "720×1280" }
+      { id: "c80gear", title: "Canon C80 Rig", meta: "00:41 · Vertical", description: "Vistiendo desde cero una Canon C80.", contributions: [], kind: "video", video: "assets/videos/c80gear.mp4", poster: "assets/images/video-posters/c80gear.jpg", dimensions: "720×1280" },
+      { id: "cadires", title: "Prop Chairs", meta: "00:05 · Vertical", description: "Stop motion básico y divertido con sillas de Atrezo.", contributions: [], kind: "video", video: "assets/videos/cadires.mp4", poster: "assets/images/video-posters/cadires.jpg", dimensions: "720×1280" },
+      { id: "fxlion", title: "FXLion Nano Pro Unboxing", meta: "00:26 · Vertical", description: "Unboxing de un nuevo modelo de baterías V-Mount.", contributions: [], kind: "video", video: "assets/videos/fxlion.mp4", poster: "assets/images/video-posters/fxlion.jpg", dimensions: "720×1280" },
+      { id: "studio1-koi", title: "Movistar KOI Photoshoot Making Of", meta: "00:21 · Vertical", description: "Making Of del photoshoot para la nueva colección de camisetas de Movistar KOI.", contributions: [], kind: "video", video: "assets/videos/studio1-koi.mp4", poster: "assets/images/video-posters/studio1-koi.jpg", dimensions: "720×1280" },
+      { id: "studio2-irene", title: "Model Photoshoot Making Of", meta: "00:18 · Vertical", description: "Making Of de photoshoot de moda.", contributions: [], kind: "video", video: "assets/videos/studio2-irene.mp4", poster: "assets/images/video-posters/studio2-irene.jpg", dimensions: "720×1280" }
     ]
   },
 
@@ -104,7 +104,7 @@ window.PORTFOLIO_CONTENT = {
             id: "dzo-vespid",
             title: "DZO Vespid Prime",
             meta: "Carrusel · 7 fotos",
-            description: "Serie de producto de ópticas DZO Vespid Prime.",
+            description: "Serie de producto del kit de ópticas DZO Vespid Prime II.",
             contributions: [],
             kind: "photos",
             images: [
@@ -121,7 +121,7 @@ window.PORTFOLIO_CONTENT = {
             id: "macbook-m5",
             title: "MacBook M5",
             meta: "Carrusel · 4 fotos",
-            description: "Serie visual de MacBook con movimiento y largas exposiciones.",
+            description: "Serie visual del úlitmo MacBook Pro M5 Max.",
             contributions: [],
             kind: "photos",
             images: [
@@ -135,7 +135,7 @@ window.PORTFOLIO_CONTENT = {
             id: "nikon-z8",
             title: "Nikon Z8",
             meta: "Carrusel · 4 fotos",
-            description: "Fotografía de producto de cámara y ópticas Nikon.",
+            description: "Fotografía de producto de cámara y ópticas de la sere Z de Nikon.",
             contributions: [],
             kind: "photos",
             images: [
@@ -156,7 +156,7 @@ window.PORTFOLIO_CONTENT = {
             id: "night-of-wolves",
             title: "DJ Set · Night of Wolves",
             meta: "Evento · 8 fotos",
-            description: "Galería del DJ set Night of Wolves.",
+            description: "Galería del set Night of Wolves en Tarragona.",
             contributions: [],
             kind: "photos",
             images: [
@@ -174,7 +174,7 @@ window.PORTFOLIO_CONTENT = {
             id: "rugby-fem-buc-vs-barca",
             title: "Rugby Fem. BUC vs Barça",
             meta: "Evento · 6 fotos",
-            description: "Galería del partido femenino BUC vs Barça.",
+            description: "Selección del partido BUC vs Barça en la Copa de la Reina de rugby femenino.",
             contributions: [],
             kind: "photos",
             images: [
@@ -197,7 +197,7 @@ window.PORTFOLIO_CONTENT = {
             id: "olympus-mju-ii",
             title: "Olympus Mju II",
             meta: "Analógico · 7 fotos",
-            description: "Selección fotográfica realizada con Olympus Mju II.",
+            description: "Selección de 35mm tomadas con una Olympus Mju II el pasado Sant Joan.",
             contributions: [],
             kind: "photos",
             images: [
@@ -214,7 +214,7 @@ window.PORTFOLIO_CONTENT = {
             id: "contax-g2",
             title: "Contax G2",
             meta: "Analógico · 7 fotos",
-            description: "Selección fotográfica realizada con Contax G2.",
+            description: "Selección de carrete 35mm disparado con una Contax G2 en un partido de División de Honor B Española de rugby (BUC vs Toro).",
             contributions: [],
             kind: "photos",
             images: [
@@ -241,7 +241,7 @@ window.PORTFOLIO_CONTENT = {
         id: "operacion-camara-deportes",
         title: "Operación de cámara · Deportes",
         meta: "Retransmisiones · 4 fotos",
-        description: "Operación de cámara en retransmisiones deportivas en directo.",
+        description: "Operación de cámara en retransmisiones de 1a y 2a RFEF.",
         contributions: ["Operación de cámara"],
         kind: "photos",
         images: [
