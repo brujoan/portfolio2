@@ -42,12 +42,19 @@
   outline-offset:2px;
 }
 
+/* La regla general de styles.css asigna 22px a los span de .side-item.
+   Los iconos conservan ese ancho, pero el texto debe ocupar todo el espacio restante. */
 .side-item .side-icon{
-  flex:0 0 auto;
+  width:22px;
+  flex:0 0 22px;
+  text-align:center;
 }
 
 .side-item .side-label{
+  width:auto;
   min-width:0;
+  flex:1 1 auto;
+  text-align:left;
   overflow:hidden;
   text-overflow:ellipsis;
   white-space:nowrap;
