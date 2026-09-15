@@ -367,6 +367,15 @@
     if (!isDesktop() || event.defaultPrevented || targetIsEditable(event.target)) return;
     if (event.metaKey || event.ctrlKey || event.altKey) return;
 
+    // En Contacto no existen columnas a la derecha. Las flechas horizontales
+    // no deben mover el foco a una columna inexistente ni quitar la selección.
+    if (currentView === "contact" && (event.key === "ArrowLeft" || event.key === "ArrowRight")) {
+      event.preventDefault();
+      activeColumn = "sidebar";
+      normalizeSelection();
+      return;
+    }
+
     if (event.key === "ArrowUp") {
       event.preventDefault();
       if (activeColumn === "sidebar") navigateSidebar(-1);
