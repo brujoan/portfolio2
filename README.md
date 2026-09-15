@@ -8,6 +8,8 @@ Portfolio audiovisual con interfaz inspirada en Finder.
 - `app.js`: lógica e interacción principal de la web, incluido el cambio de idioma.
 - `styles.css`: estilos visuales principales de escritorio.
 - `language.css`: estilos del selector CA / ES / EN.
+- `desktop.css`: controles específicos de escritorio para los carruseles.
+- `desktop.js`: navegación por teclado y botones anterior/siguiente de las galerías en escritorio.
 - `mobile.css`: layout responsive específico para móvil.
 - `mobile.js`: navegación móvil entre listado y vista de cada pieza.
 - `index.html`: estructura principal y carga de scripts.
@@ -31,10 +33,21 @@ En `content.js`, los textos traducibles usan esta forma:
 L("Text en català", "Texto en español", "Text in English")
 ```
 
+## Navegación de escritorio
+
+En pantallas de más de 820 px:
+
+- todas las galerías de fotos muestran botones anterior/siguiente sobre el carrusel;
+- `←` / `→` cambian de foto cuando hay una galería abierta;
+- `↑` / `↓` recorren los elementos de la columna activa;
+- cuando no hay una galería abierta, `←` pasa a la columna de carpetas y `→` a la columna de contenido;
+- `Enter` abre el elemento seleccionado.
+
 ## Versión móvil
 
 Por debajo de 820 px la misma web cambia automáticamente a una interfaz adaptada a móvil:
 
+- Contacto funciona como portada y aparece primero en la navegación;
 - categorías en una barra horizontal táctil;
 - listado de piezas a ancho completo;
 - cada proyecto se abre en una vista propia con botón de volver;
@@ -42,7 +55,7 @@ Por debajo de 820 px la misma web cambia automáticamente a una interfaz adaptad
 - vídeo vertical, YouTube, audio y contacto adaptados a pantalla pequeña;
 - soporte para áreas seguras de iPhone mediante `viewport-fit=cover`.
 
-La versión de escritorio permanece independiente de estos estilos mediante `mobile.css` y `mobile.js`.
+La versión de escritorio permanece independiente de estos estilos mediante `desktop.css` / `desktop.js`, y la versión móvil mediante `mobile.css` / `mobile.js`.
 
 ## Contenido
 
