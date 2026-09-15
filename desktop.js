@@ -5,6 +5,8 @@
   const folderListElement = document.getElementById("folderList");
   const itemListElement = document.getElementById("itemList");
 
+  // Como en Finder en modo columnas: la navegación por teclado alterna
+  // entre la columna de carpetas y la columna de contenido/preview.
   let activeColumn = "items";
 
   const carouselLabels = {
@@ -97,12 +99,14 @@
       controls.querySelector('[data-carousel-action="previous"]').addEventListener("click", event => {
         event.preventDefault();
         event.stopPropagation();
+        activeColumn = "items";
         moveCarousel(-1);
       });
 
       controls.querySelector('[data-carousel-action="next"]').addEventListener("click", event => {
         event.preventDefault();
         event.stopPropagation();
+        activeColumn = "items";
         moveCarousel(1);
       });
 
@@ -166,8 +170,15 @@
   document.addEventListener("click", event => {
     if (!isDesktop()) return;
 
-    if (event.target.closest("#folderList .row")) activeColumn = "folders";
-    else if (event.target.closest("#itemList .row")) activeColumn = "items";
+    if (event.target.closest("#folderList .row")) {
+      activeColumn = "folders";
+    } else if (event.target.closest("#itemList .row")) {
+      activeColumn = "items";
+    } else if (event.target.closest(".insta-carousel-wrap")) {
+      // Si el usuario toca directamente la galería, las flechas vuelven a
+      // controlar las fotos hasta llegar a la primera.
+      activeColumn = "items";
+    }
 
     if (event.target.closest("[data-lang]")) {
       setTimeout(installCarouselControls, 0);
@@ -178,15 +189,47 @@
     if (!isDesktop() || event.defaultPrevented || targetIsEditable(event.target)) return;
     if (event.metaKey || event.ctrlKey || event.altKey) return;
 
-    const photoCarouselOpen = currentItem?.kind === "photos" && Boolean(getCarousel());
+    const carousel = getCarousel();
+    const photoCarouselOpen = currentItem?.kind === "photos" && Boolean(carousel);
 
-    if (photoCarouselOpen && event.key === "ArrowLeft") {
+    // Finder en columnas: si estamos en la columna izquierda, → vuelve al
+    // contenido. Mientras esa columna está activa, las flechas no cambian foto.
+    if (activeColumn === "folders") {
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        switchColumn("items");
+        return;
+      }
+
+      if (event.key === "ArrowUp") {
+        event.preventDefault();
+        navigateRows(-1);
+        return;
+      }
+
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+        navigateRows(1);
+        return;
+      }
+
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        return;
+      }
+    }
+
+    // En una galería, ←/→ recorren las fotos. Al llegar a la primera foto,
+    // otro ← abandona el carrusel y devuelve el control a la columna de carpetas.
+    if (photoCarouselOpen && activeColumn === "items" && event.key === "ArrowLeft") {
       event.preventDefault();
-      moveCarousel(-1);
+      const index = carouselIndex(carousel.track);
+      if (index > 0) moveCarousel(-1);
+      else switchColumn("folders");
       return;
     }
 
-    if (photoCarouselOpen && event.key === "ArrowRight") {
+    if (photoCarouselOpen && activeColumn === "items" && event.key === "ArrowRight") {
       event.preventDefault();
       moveCarousel(1);
       return;
