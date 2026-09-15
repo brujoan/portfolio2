@@ -1,15 +1,18 @@
-// Visor de fotos a pantalla completa para todas las galerías.
+// Visor superpuesto / Quick Look para el contenido del portfolio.
 (() => {
+  const desktopQuery = window.matchMedia("(min-width: 821px)");
   const labels = {
-    ca: { close: "Tanca", previous: "Foto anterior", next: "Foto següent" },
-    es: { close: "Cerrar", previous: "Foto anterior", next: "Foto siguiente" },
-    en: { close: "Close", previous: "Previous photo", next: "Next photo" }
+    ca: { close: "Tanca", previous: "Foto anterior", next: "Foto següent", open: "Obre" },
+    es: { close: "Cerrar", previous: "Foto anterior", next: "Foto siguiente", open: "Abrir" },
+    en: { close: "Close", previous: "Previous photo", next: "Next photo", open: "Open" }
   };
 
   let sources = [];
   let index = 0;
+  let mode = "photo";
   let lightbox = null;
-  let image = null;
+  let stage = null;
+  let mediaHost = null;
   let title = null;
   let counter = null;
   let previous = null;
@@ -17,7 +20,7 @@
   let closeButton = null;
 
   // En escritorio el carrusel captura el puntero para permitir arrastrar.
-  // Por eso guardamos el <img> del pointerdown y abrimos en pointerup si no hubo drag.
+  // Guardamos el <img> del pointerdown y abrimos en pointerup si no hubo drag.
   let pointerCandidate = null;
   let pointerId = null;
   let pointerStartX = 0;
@@ -28,12 +31,20 @@
     return labels[currentLanguage] || labels.ca;
   }
 
-  function itemTitle() {
+  function itemTitle(item = currentItem) {
     try {
-      return currentItem ? tr(currentItem.title) : "";
+      return item ? tr(item.title) : "";
     } catch (_) {
       return "";
     }
+  }
+
+  function escapeHTML(value) {
+    return String(value ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;");
   }
 
   function ensureLightbox() {
@@ -48,7 +59,7 @@
       <div class="photo-lightbox-stage">
         <button class="photo-lightbox-close" type="button">×</button>
         <button class="photo-lightbox-nav previous" type="button"></button>
-        <img class="photo-lightbox-image" alt="">
+        <div class="quicklook-media-host"></div>
         <button class="photo-lightbox-nav next" type="button"></button>
         <div class="photo-lightbox-meta">
           <span class="photo-lightbox-title"></span>
@@ -58,7 +69,8 @@
 
     document.body.appendChild(lightbox);
 
-    image = lightbox.querySelector(".photo-lightbox-image");
+    stage = lightbox.querySelector(".photo-lightbox-stage");
+    mediaHost = lightbox.querySelector(".quicklook-media-host");
     title = lightbox.querySelector(".photo-lightbox-title");
     counter = lightbox.querySelector(".photo-lightbox-counter");
     previous = lightbox.querySelector(".photo-lightbox-nav.previous");
@@ -66,11 +78,11 @@
     closeButton = lightbox.querySelector(".photo-lightbox-close");
 
     closeButton.addEventListener("click", close);
-    previous.addEventListener("click", () => show(index - 1));
-    next.addEventListener("click", () => show(index + 1));
+    previous.addEventListener("click", () => showPhoto(index - 1));
+    next.addEventListener("click", () => showPhoto(index + 1));
 
     lightbox.addEventListener("click", event => {
-      if (event.target === lightbox || event.target.classList.contains("photo-lightbox-stage")) close();
+      if (event.target === lightbox || event.target === stage) close();
     });
   }
 
@@ -85,11 +97,21 @@
     next.setAttribute("title", current.next);
   }
 
-  function show(targetIndex) {
+  function setMode(nextMode) {
+    mode = nextMode;
+    lightbox.classList.toggle("media-mode", mode !== "photo");
+    previous.hidden = mode !== "photo";
+    next.hidden = mode !== "photo";
+  }
+
+  function showPhoto(targetIndex) {
     if (!sources.length) return;
+    ensureLightbox();
+    setMode("photo");
 
     index = Math.max(0, Math.min(targetIndex, sources.length - 1));
-    image.classList.add("changing");
+    mediaHost.innerHTML = `<img class="photo-lightbox-image changing" alt="">`;
+    const image = mediaHost.querySelector(".photo-lightbox-image");
 
     requestAnimationFrame(() => {
       image.src = sources[index];
@@ -105,28 +127,115 @@
     });
   }
 
-  function openFrom(img) {
-    const carousel = img.closest(".insta-carousel");
-    if (!carousel) return;
-
-    const images = [...carousel.querySelectorAll(".insta-slide img")];
-    sources = images.map(photo => photo.currentSrc || photo.src).filter(Boolean);
-    if (!sources.length) return;
-
-    index = Math.max(0, images.indexOf(img));
+  function openShell(nextMode) {
     ensureLightbox();
     updateLabels();
-    show(index);
-
+    setMode(nextMode);
     lightbox.classList.add("open");
     document.body.classList.add("lightbox-open");
     closeButton.focus({ preventScroll: true });
   }
 
+  function activeCarouselIndex(carousel) {
+    const thumbs = [...carousel.closest(".insta-carousel-wrap")?.querySelectorAll(".folder-preview-thumb") || []];
+    const thumbIndex = thumbs.findIndex(thumb => thumb.classList.contains("active"));
+    if (thumbIndex >= 0) return thumbIndex;
+
+    const dots = [...carousel.closest(".insta-carousel-wrap")?.querySelectorAll(".carousel-dots .dot") || []];
+    const dotIndex = dots.findIndex(dot => dot.classList.contains("active"));
+    if (dotIndex >= 0) return dotIndex;
+
+    if (!carousel.clientWidth) return 0;
+    return Math.round(carousel.scrollLeft / carousel.clientWidth);
+  }
+
+  function openPhotoCarousel(carousel, requestedIndex = null) {
+    if (!carousel) return false;
+    const images = [...carousel.querySelectorAll(".insta-slide img")];
+    sources = images.map(photo => photo.currentSrc || photo.src).filter(Boolean);
+    if (!sources.length) return false;
+
+    index = requestedIndex == null
+      ? Math.max(0, Math.min(activeCarouselIndex(carousel), sources.length - 1))
+      : Math.max(0, Math.min(requestedIndex, sources.length - 1));
+
+    openShell("photo");
+    showPhoto(index);
+    return true;
+  }
+
+  function openFrom(img) {
+    const carousel = img.closest(".insta-carousel");
+    if (!carousel) return false;
+    const images = [...carousel.querySelectorAll(".insta-slide img")];
+    return openPhotoCarousel(carousel, Math.max(0, images.indexOf(img)));
+  }
+
+  function renderGenericItem(item) {
+    const safeTitle = escapeHTML(itemTitle(item));
+    let html = "";
+
+    if (item.kind === "video" && item.video) {
+      const poster = item.poster ? ` poster="${escapeHTML(item.poster)}"` : "";
+      html = `<video class="quicklook-video" controls autoplay playsinline${poster}><source src="${escapeHTML(item.video)}" type="video/mp4"></video>`;
+    } else if (item.kind === "youtube" && item.youtubeId) {
+      html = `<iframe class="quicklook-youtube" src="https://www.youtube.com/embed/${encodeURIComponent(item.youtubeId)}?autoplay=1&rel=0" title="${safeTitle}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
+    } else if (item.kind === "audio" && item.audio) {
+      const audioType = item.audio.toLowerCase().endsWith(".wav") ? "audio/wav" : "audio/mpeg";
+      html = `<div class="quicklook-audio"><div class="quicklook-audio-icon">♫</div><strong>${safeTitle}</strong><audio controls autoplay><source src="${escapeHTML(item.audio)}" type="${audioType}"></audio></div>`;
+    } else if (item.kind === "channel" && item.thumbnails?.length) {
+      html = `<a class="quicklook-channel" href="${escapeHTML(item.externalUrl || "#")}" target="_blank" rel="noopener">
+        <div class="quicklook-channel-grid">${item.thumbnails.slice(0,4).map(thumb => `<img src="${escapeHTML(thumb.local || thumb.remote || "")}" alt="">`).join("")}</div>
+        <strong>${safeTitle}</strong><span>${escapeHTML(text().open)} ↗</span>
+      </a>`;
+    } else {
+      const previewImage = item.images?.[0] || item.poster || "";
+      if (previewImage) html = `<img class="photo-lightbox-image" src="${escapeHTML(previewImage)}" alt="${safeTitle}">`;
+      else return false;
+    }
+
+    sources = [];
+    openShell("media");
+    mediaHost.innerHTML = html;
+    title.textContent = itemTitle(item);
+    counter.textContent = "";
+    return true;
+  }
+
+  function openSelectedItem() {
+    // Quick Look solo debe actuar cuando un contenido está realmente seleccionado
+    // (azul) en la columna de contenido, igual que Finder.
+    const selectedRow = document.querySelector("#itemList .row.selected");
+    if (!selectedRow || !currentItem) return false;
+
+    if (currentItem.kind === "photos") {
+      const carousel = document.querySelector("#previewPanel .insta-carousel");
+      if (carousel) return openPhotoCarousel(carousel);
+
+      sources = (currentItem.images || []).slice();
+      if (!sources.length) return false;
+      index = 0;
+      openShell("photo");
+      showPhoto(0);
+      return true;
+    }
+
+    return renderGenericItem(currentItem);
+  }
+
   function close() {
     if (!lightbox?.classList.contains("open")) return;
-    lightbox.classList.remove("open");
+
+    // Detiene vídeo/audio/iframe inmediatamente al cerrar Quick Look.
+    mediaHost.innerHTML = "";
+    lightbox.classList.remove("open", "media-mode");
     document.body.classList.remove("lightbox-open");
+    sources = [];
+  }
+
+  function isEditableTarget(target) {
+    if (!(target instanceof HTMLElement)) return false;
+    return Boolean(target.closest("input, textarea, select, [contenteditable='true']"));
   }
 
   // Móvil y navegadores donde el click no queda cancelado por el drag del carrusel.
@@ -134,7 +243,6 @@
     const img = event.target.closest(".insta-slide img");
     if (!img) return;
 
-    // Evita abrir dos veces después del pointerup de escritorio.
     if (performance.now() - lastPointerOpenAt < 350) {
       event.preventDefault();
       event.stopPropagation();
@@ -146,8 +254,7 @@
     openFrom(img);
   });
 
-  // Escritorio: app.js hace preventDefault + pointer capture para arrastrar el carrusel,
-  // lo que puede suprimir el click del <img>. Detectamos un click real por distancia.
+  // Escritorio: app.js hace preventDefault + pointer capture para arrastrar el carrusel.
   document.addEventListener("pointerdown", event => {
     if (event.pointerType === "touch" || event.button !== 0) return;
     const img = event.target.closest(".insta-slide img");
@@ -180,29 +287,39 @@
     pointerId = null;
   }, true);
 
-  // Captura antes que desktop.js para que, con el visor abierto,
-  // las flechas controlen únicamente la foto ampliada.
+  // Quick Look estilo Finder. Se captura antes que la navegación de desktop.js.
   document.addEventListener("keydown", event => {
-    if (!lightbox?.classList.contains("open")) return;
+    const isOpen = lightbox?.classList.contains("open");
 
-    if (event.key === "Escape") {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      close();
+    if (isOpen) {
+      if (event.key === "Escape" || event.code === "Space") {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        close();
+        return;
+      }
+
+      if (mode === "photo" && event.key === "ArrowLeft") {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        if (index > 0) showPhoto(index - 1);
+        return;
+      }
+
+      if (mode === "photo" && event.key === "ArrowRight") {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        if (index < sources.length - 1) showPhoto(index + 1);
+      }
       return;
     }
 
-    if (event.key === "ArrowLeft") {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      if (index > 0) show(index - 1);
-      return;
-    }
+    if (!desktopQuery.matches || event.code !== "Space" || isEditableTarget(event.target)) return;
+    if (event.metaKey || event.ctrlKey || event.altKey) return;
 
-    if (event.key === "ArrowRight") {
+    if (openSelectedItem()) {
       event.preventDefault();
       event.stopImmediatePropagation();
-      if (index < sources.length - 1) show(index + 1);
     }
   }, true);
 
