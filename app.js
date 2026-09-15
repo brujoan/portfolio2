@@ -20,6 +20,9 @@ let currentPhotoFolder = null;
 let currentItem = null;
 
 const folderList = document.getElementById("folderList");
+const photoFolderColumn = document.getElementById("photoFolderColumn");
+const photoFolderList = document.getElementById("photoFolderList");
+const photoFolderHeader = document.getElementById("photoFolderHeader");
 const itemList = document.getElementById("itemList");
 const preview = document.getElementById("previewPanel");
 const itemHeader = document.getElementById("itemHeader");
@@ -29,6 +32,12 @@ const statusText = document.getElementById("statusText");
 const searchInput = document.getElementById("searchInput");
 const brandLink = document.querySelector(".brand a");
 const languageSwitcher = document.querySelector(".language-switcher");
+const columns = document.querySelector(".columns");
+const desktopQuery = window.matchMedia("(min-width: 821px)");
+
+function isDesktopLayout() {
+  return desktopQuery.matches;
+}
 
 function tr(value) {
   if (value == null) return "";
@@ -72,6 +81,12 @@ function allItems() {
   );
 }
 
+function updateColumnLayout() {
+  if (!columns) return;
+  const photosDesktop = isDesktopLayout() && currentView === "folder" && currentSection === "fotos";
+  columns.classList.toggle("photos-columns", photosDesktop);
+}
+
 function applyStaticTranslations() {
   const text = ui();
   document.documentElement.lang = currentLanguage;
@@ -91,6 +106,7 @@ function applyStaticTranslations() {
   if (categoriesHeader) categoriesHeader.textContent = text.categories;
   if (sidebarNote) sidebarNote.textContent = text.sidebarNote;
   if (searchInput) searchInput.placeholder = text.searchPlaceholder;
+  if (photoFolderHeader) photoFolderHeader.textContent = tr(DATA.fotos.label);
 
   document.querySelectorAll(".side-item[data-view]").forEach(button => {
     const label = button.querySelector(".side-label");
@@ -137,36 +153,10 @@ function renderFolderColumn() {
     return;
   }
 
-  if (currentSection === "fotos" && currentPhotoFolder) {
-    Object.entries(DATA.fotos.folders).forEach(([folderKey, folder]) => {
-      const row = document.createElement("div");
-      row.className = "row category-main" + (folderKey === currentPhotoFolder ? " selected" : "");
-      row.innerHTML = `
-        <div class="folder-icon">${folder.icon}</div>
-        <div class="row-copy">
-          <div class="row-title">${tr(folder.label)}</div>
-          <div class="row-meta">${elementCount(folder.items.length)}</div>
-        </div>
-        <div class="chevron">›</div>`;
-
-      row.onclick = () => {
-        currentPhotoFolder = folderKey;
-        currentItem = null;
-        renderFolderColumn();
-        renderItems(searchInput.value);
-        renderSectionEmpty();
-        title.textContent = tr(folder.label);
-        updateBreadcrumb();
-      };
-
-      folderList.appendChild(row);
-    });
-    return;
-  }
-
   Object.entries(DATA).forEach(([key, section]) => {
     const row = document.createElement("div");
     row.className = "row category-main" + (currentSection === key ? " selected" : "");
+    row.dataset.sectionKey = key;
     row.innerHTML = `
       <div class="folder-icon">${section.icon}</div>
       <div class="row-copy">
@@ -178,6 +168,44 @@ function renderFolderColumn() {
     row.onclick = () => selectSection(key);
     folderList.appendChild(row);
   });
+}
+
+function renderPhotoFolderColumn() {
+  if (!photoFolderList || !photoFolderHeader) return;
+
+  photoFolderList.innerHTML = "";
+  photoFolderHeader.textContent = tr(DATA.fotos.label);
+
+  if (currentView !== "folder" || currentSection !== "fotos") return;
+
+  Object.entries(DATA.fotos.folders).forEach(([folderKey, folder]) => {
+    const row = document.createElement("div");
+    row.className = "row photo-folder-row" + (folderKey === currentPhotoFolder ? " selected" : "");
+    row.dataset.photoFolderKey = folderKey;
+    row.innerHTML = `
+      <div class="folder-icon">${folder.icon}</div>
+      <div class="row-copy">
+        <div class="row-title">${tr(folder.label)}</div>
+        <div class="row-meta">${elementCount(folder.items.length)}</div>
+      </div>
+      <div class="chevron">›</div>`;
+
+    row.onclick = () => selectPhotoFolder(folderKey);
+    photoFolderList.appendChild(row);
+  });
+}
+
+function selectPhotoFolder(folderKey) {
+  if (!DATA.fotos.folders[folderKey]) return;
+  currentPhotoFolder = folderKey;
+  currentItem = null;
+  renderFolderColumn();
+  renderPhotoFolderColumn();
+  renderItems(searchInput.value);
+  renderSectionEmpty();
+  title.textContent = tr(DATA.fotos.folders[folderKey].label);
+  updateBreadcrumb();
+  updateColumnLayout();
 }
 
 function thumbFor(item) {
@@ -219,6 +247,7 @@ function visibleItems() {
 
   if (currentSection === "fotos") {
     if (!currentPhotoFolder) {
+      if (isDesktopLayout()) return [];
       return Object.entries(DATA.fotos.folders).map(([key, folder]) => ({
         id: `folder-${key}`,
         title: folder.label,
@@ -260,12 +289,13 @@ function renderItems(filter = "") {
     currentView === "all"
       ? ui().all
       : currentSection === "fotos"
-        ? (currentPhotoFolder ? ui().content : ui().folders)
+        ? (currentPhotoFolder ? tr(DATA.fotos.folders[currentPhotoFolder].label) : ui().content)
         : tr(DATA[currentSection].label);
 
   items.forEach(item => {
     const row = document.createElement("div");
     row.className = "row" + (currentItem?.id === item.id ? " selected" : "");
+    row.dataset.itemId = item.id || "";
     row.innerHTML = `
       ${thumbFor(item)}
       <div class="row-copy">
@@ -276,13 +306,7 @@ function renderItems(filter = "") {
 
     row.onclick = () => {
       if (item.kind === "folder") {
-        currentPhotoFolder = item.folderKey;
-        currentItem = null;
-        renderFolderColumn();
-        renderItems(searchInput.value);
-        renderSectionEmpty();
-        title.textContent = tr(DATA.fotos.folders[currentPhotoFolder].label);
-        updateBreadcrumb();
+        selectPhotoFolder(item.folderKey);
       } else {
         selectItem(item);
       }
@@ -298,37 +322,44 @@ function selectSection(key) {
   currentView = "folder";
   currentSection = key;
   currentItem = null;
-
-  if (key === "fotos") currentPhotoFolder = null;
+  currentPhotoFolder = null;
 
   setSidebarActive(key);
   title.textContent = tr(DATA[key].label);
   renderFolderColumn();
+  renderPhotoFolderColumn();
   renderItems(searchInput.value);
   renderSectionEmpty();
   updateBreadcrumb();
+  updateColumnLayout();
 }
 
 function showAll() {
   currentView = "all";
   currentItem = null;
+  currentPhotoFolder = null;
   setSidebarActive("todo");
   title.textContent = ui().all;
   renderFolderColumn();
+  renderPhotoFolderColumn();
   renderItems(searchInput.value);
   renderAllSummary();
   updateBreadcrumb();
+  updateColumnLayout();
 }
 
 function showContact() {
   currentView = "contact";
   currentItem = null;
+  currentPhotoFolder = null;
   setSidebarActive("contacto");
   title.textContent = ui().contact;
   renderFolderColumn();
+  renderPhotoFolderColumn();
   renderItems();
   renderContact();
   updateBreadcrumb();
+  updateColumnLayout();
 }
 
 function renderSectionEmpty() {
@@ -599,9 +630,11 @@ function refreshCurrentView() {
     setSidebarActive("contacto");
     title.textContent = ui().contact;
     renderFolderColumn();
+    renderPhotoFolderColumn();
     renderItems();
     renderContact();
     updateBreadcrumb();
+    updateColumnLayout();
     return;
   }
 
@@ -609,10 +642,12 @@ function refreshCurrentView() {
     setSidebarActive("todo");
     title.textContent = ui().all;
     renderFolderColumn();
+    renderPhotoFolderColumn();
     renderItems(searchInput.value);
     if (currentItem) renderPreview(currentItem);
     else renderAllSummary();
     updateBreadcrumb();
+    updateColumnLayout();
     return;
   }
 
@@ -621,10 +656,12 @@ function refreshCurrentView() {
     ? tr(DATA.fotos.folders[currentPhotoFolder].label)
     : tr(DATA[currentSection].label);
   renderFolderColumn();
+  renderPhotoFolderColumn();
   renderItems(searchInput.value);
   if (currentItem) renderPreview(currentItem);
   else renderSectionEmpty();
   updateBreadcrumb();
+  updateColumnLayout();
 }
 
 function setLanguage(language) {
@@ -656,6 +693,15 @@ searchInput.addEventListener("input", event => renderItems(event.target.value));
 document.addEventListener("dragstart", event => {
   if (event.target.tagName === "IMG") event.preventDefault();
 });
+
+if (desktopQuery.addEventListener) {
+  desktopQuery.addEventListener("change", () => {
+    renderFolderColumn();
+    renderPhotoFolderColumn();
+    renderItems(searchInput.value);
+    updateColumnLayout();
+  });
+}
 
 applyStaticTranslations();
 selectSection("proyectos");
