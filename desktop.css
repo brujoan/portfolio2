@@ -45,8 +45,9 @@
     transform:translateY(-50%);
     width:34px;
     height:34px;
-    display:grid;
-    place-items:center;
+    display:flex;
+    align-items:center;
+    justify-content:center;
     padding:0;
     border:1px solid rgba(255,255,255,.09);
     border-radius:50%;
@@ -63,22 +64,30 @@
     transition:background .18s ease,color .18s ease,opacity .18s ease,transform .18s ease,border-color .18s ease;
   }
 
-  /* Dibujamos el chevron en CSS para que quede ópticamente centrado dentro del círculo. */
+  /* SVG en máscara con viewBox simétrico: el chevron queda centrado geométricamente. */
   .desktop-carousel-nav::before{
     content:"";
-    width:8px;
-    height:8px;
-    box-sizing:border-box;
-    border-top:2px solid currentColor;
-    border-right:2px solid currentColor;
+    display:block;
+    width:12px;
+    height:12px;
+    flex:0 0 12px;
+    background:currentColor;
+    -webkit-mask-position:center;
+    -webkit-mask-repeat:no-repeat;
+    -webkit-mask-size:12px 12px;
+    mask-position:center;
+    mask-repeat:no-repeat;
+    mask-size:12px 12px;
   }
 
   .desktop-carousel-nav.previous::before{
-    transform:translateX(1px) rotate(-135deg);
+    -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M7.5 2.25 3.75 6l3.75 3.75' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M7.5 2.25 3.75 6l3.75 3.75' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   }
 
   .desktop-carousel-nav.next::before{
-    transform:translateX(-1px) rotate(45deg);
+    -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='m4.5 2.25 3.75 3.75L4.5 9.75' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='m4.5 2.25 3.75 3.75L4.5 9.75' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   }
 
   /* Los controles solo aparecen al entrar con el ratón en la galería.
