@@ -4,8 +4,10 @@
   const previewPanel = document.getElementById("previewPanel");
   const folderListElement = document.getElementById("folderList");
   const itemListElement = document.getElementById("itemList");
+  const sidebarNav = document.querySelector(".sidebar nav");
 
-  // Como en Finder en modo columnas: solo una columna tiene selección azul.
+  // Como en Finder en modo columnas: sidebar -> carpetas -> contenido/preview.
+  // Solo la columna activa muestra selección azul.
   let activeColumn = "folders";
 
   const carouselLabels = {
@@ -141,6 +143,11 @@
     return [...root.querySelectorAll(".row")].filter(row => row.offsetParent !== null);
   }
 
+  function sidebarButtons() {
+    if (!sidebarNav) return [];
+    return [...sidebarNav.querySelectorAll(".side-item[data-view]")].filter(button => button.offsetParent !== null);
+  }
+
   function filteredVisibleItems() {
     const query = (searchInput?.value || "").trim().toLowerCase();
     return visibleItems().filter(item =>
@@ -151,6 +158,16 @@
         .toLowerCase()
         .includes(query)
     );
+  }
+
+  function currentSidebarButton() {
+    const view = currentView === "all"
+      ? "todo"
+      : currentView === "contact"
+        ? "contacto"
+        : currentSection;
+
+    return sidebarNav?.querySelector(`.side-item[data-view="${view}"]`) || sidebarButtons()[0] || null;
   }
 
   function currentFolderRow() {
@@ -182,12 +199,21 @@
   function clearVisualSelection() {
     folderListElement?.querySelectorAll(".row.selected").forEach(row => row.classList.remove("selected"));
     itemListElement?.querySelectorAll(".row.selected").forEach(row => row.classList.remove("selected"));
+    sidebarNav?.querySelectorAll(".side-item.keyboard-selected").forEach(button => button.classList.remove("keyboard-selected"));
   }
 
   function normalizeSelection() {
     if (!isDesktop()) return;
 
     clearVisualSelection();
+
+    if (activeColumn === "sidebar") {
+      const button = currentSidebarButton();
+      button?.classList.add("keyboard-selected");
+      button?.scrollIntoView({ block: "nearest" });
+      return;
+    }
+
     const row = activeColumn === "folders" ? currentFolderRow() : currentItemRow();
     row?.classList.add("selected");
     row?.scrollIntoView({ block: "nearest" });
@@ -212,6 +238,27 @@
     row.click();
     setTimeout(normalizeSelection, 0);
     return true;
+  }
+
+  function navigateSidebar(direction) {
+    const buttons = sidebarButtons();
+    if (!buttons.length) return false;
+
+    const currentButton = currentSidebarButton();
+    const currentIndex = Math.max(0, buttons.indexOf(currentButton));
+    const nextIndex = Math.max(0, Math.min(currentIndex + direction, buttons.length - 1));
+    const button = buttons[nextIndex];
+
+    activeColumn = "sidebar";
+    button.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    button.click();
+    setTimeout(normalizeSelection, 0);
+    return true;
+  }
+
+  function switchToSidebar() {
+    activeColumn = "sidebar";
+    normalizeSelection();
   }
 
   function switchToFolders() {
@@ -243,6 +290,12 @@
 
   document.addEventListener("click", event => {
     if (!isDesktop()) return;
+
+    if (event.target.closest(".sidebar .side-item[data-view]")) {
+      activeColumn = "sidebar";
+      setTimeout(normalizeSelection, 0);
+      return;
+    }
 
     if (event.target.closest("#folderList .row")) {
       activeColumn = "folders";
@@ -276,13 +329,15 @@
 
     if (event.key === "ArrowUp") {
       event.preventDefault();
-      navigateRows(-1);
+      if (activeColumn === "sidebar") navigateSidebar(-1);
+      else navigateRows(-1);
       return;
     }
 
     if (event.key === "ArrowDown") {
       event.preventDefault();
-      navigateRows(1);
+      if (activeColumn === "sidebar") navigateSidebar(1);
+      else navigateRows(1);
       return;
     }
 
@@ -300,12 +355,27 @@
         }
       }
 
-      if (activeColumn === "items") switchToFolders();
+      if (activeColumn === "items") {
+        switchToFolders();
+        return;
+      }
+
+      if (activeColumn === "folders") {
+        switchToSidebar();
+        return;
+      }
+
       return;
     }
 
     if (event.key === "ArrowRight") {
       event.preventDefault();
+
+      if (activeColumn === "sidebar") {
+        if (rowsFor("folders").length) switchToFolders();
+        else switchToItems();
+        return;
+      }
 
       if (activeColumn === "folders") {
         switchToItems();
@@ -325,8 +395,20 @@
 
     if (event.key === "Enter") {
       event.preventDefault();
-      if (activeColumn === "folders") switchToItems();
-      else currentItemRow()?.click();
+
+      if (activeColumn === "sidebar") {
+        const button = currentSidebarButton();
+        button?.click();
+        setTimeout(normalizeSelection, 0);
+        return;
+      }
+
+      if (activeColumn === "folders") {
+        switchToItems();
+        return;
+      }
+
+      currentItemRow()?.click();
     }
   });
 
