@@ -9,13 +9,40 @@
 }
 
 @media (min-width:821px){
-  /* En Fotos aparece un nivel Finder adicional: Fotos > subcarpeta > trabajo > preview. */
+  /*
+     Fotos mantiene el comportamiento de Finder, pero muestra únicamente
+     las columnas útiles en cada nivel:
+
+     1) Fotos -> Categorías | Fotos
+     2) Subcarpeta -> Categorías | Fotos | contenido de la subcarpeta
+     3) Trabajo seleccionado -> Fotos | contenido de la subcarpeta | preview
+
+     Las columnas conservan las mismas anchuras que el resto de la web.
+  */
   .columns.photos-columns{
-    grid-template-columns:230px 250px 290px minmax(360px,1fr);
+    grid-template-columns:290px 330px 330px minmax(0,1fr);
   }
 
   .columns.photos-columns .photo-folders-column{
     display:block;
+  }
+
+  /* Nivel Fotos: todavía no hay contenido de una subcarpeta. */
+  .columns.photos-columns:has(#itemList:empty){
+    grid-template-columns:290px 330px minmax(0,1fr);
+  }
+
+  .columns.photos-columns:has(#itemList:empty) .items-column{
+    display:none;
+  }
+
+  /* Al seleccionar un trabajo, Categorías deja paso al preview. */
+  .columns.photos-columns:has(#itemList .row.selected){
+    grid-template-columns:290px 330px minmax(0,1fr);
+  }
+
+  .columns.photos-columns:has(#itemList .row.selected) .folders-column{
+    display:none;
   }
 
   /* La versión hereda el estilo de la localización y queda deliberadamente sutil. */
