@@ -45,6 +45,21 @@
     display:none;
   }
 
+  /* Contacto usa todo el espacio de contenido, sin columnas Finder intermedias. */
+  .columns:has(.contact-screen){
+    grid-template-columns:minmax(0,1fr);
+  }
+
+  .columns:has(.contact-screen) .folders-column,
+  .columns:has(.contact-screen) .photo-folders-column,
+  .columns:has(.contact-screen) .items-column{
+    display:none !important;
+  }
+
+  .columns:has(.contact-screen) .preview-panel{
+    grid-column:1 / -1;
+  }
+
   /* La versión hereda el estilo de la localización y queda deliberadamente sutil. */
   .sidebar-note .sidebar-version{
     display:block;
