@@ -40,7 +40,7 @@ window.PORTFOLIO_UI = {
     contribution: "APORTACIÓ",
     summaryKicker: "PORTFOLIO / ÍNDEX",
     summaryTitle: "Tot.",
-    summaryIntro: "Tot el material del portfolio en un únic lloc. Selecciona qualsevol peça de la columna central i s'obrirà aquí, sense sortir de Tot.",
+    summaryIntro: "Tot el material del portfolio en un únic lloc.",
     contactTitle: "Parlem?",
     email: "Correu",
     originalScore: "JOAN BRÚ / MÚSICA ORIGINAL"
@@ -72,7 +72,7 @@ window.PORTFOLIO_UI = {
     contribution: "APORTACIÓN",
     summaryKicker: "PORTFOLIO / ÍNDICE",
     summaryTitle: "Todo.",
-    summaryIntro: "Todo el material del portfolio en un único lugar. Selecciona cualquier pieza de la columna central y se abrirá aquí, sin salir de Todo.",
+    summaryIntro: "Todo el material del portfolio en un único lugar.",
     contactTitle: "¿Hablamos?",
     email: "Correo",
     originalScore: "JOAN BRÚ / MÚSICA ORIGINAL"
@@ -104,8 +104,8 @@ window.PORTFOLIO_UI = {
     contribution: "CONTRIBUTION",
     summaryKicker: "PORTFOLIO / INDEX",
     summaryTitle: "All.",
-    summaryIntro: "All portfolio material in one place. Select any piece from the middle column and it will open here without leaving All.",
-    contactTitle: "Let's talk?",
+    summaryIntro: "All portfolio material in one place.",
+    contactTitle: "Want to talk?",
     email: "Email",
     originalScore: "JOAN BRÚ / ORIGINAL SCORE"
   }
