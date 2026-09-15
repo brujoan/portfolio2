@@ -4,7 +4,20 @@
   display:none;
 }
 
+.photo-folders-column{
+  display:none;
+}
+
 @media (min-width:821px){
+  /* En Fotos aparece un nivel Finder adicional: Fotos > subcarpeta > trabajo > preview. */
+  .columns.photos-columns{
+    grid-template-columns:230px 250px 290px minmax(360px,1fr);
+  }
+
+  .columns.photos-columns .photo-folders-column{
+    display:block;
+  }
+
   /* La versión hereda el estilo de la localización y queda deliberadamente sutil. */
   .sidebar-note .sidebar-version{
     display:block;
