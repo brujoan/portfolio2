@@ -16,6 +16,14 @@
   let next = null;
   let closeButton = null;
 
+  // En escritorio el carrusel captura el puntero para permitir arrastrar.
+  // Por eso guardamos el <img> del pointerdown y abrimos en pointerup si no hubo drag.
+  let pointerCandidate = null;
+  let pointerId = null;
+  let pointerStartX = 0;
+  let pointerStartY = 0;
+  let lastPointerOpenAt = 0;
+
   function text() {
     return labels[currentLanguage] || labels.ca;
   }
@@ -121,13 +129,56 @@
     document.body.classList.remove("lightbox-open");
   }
 
+  // Móvil y navegadores donde el click no queda cancelado por el drag del carrusel.
   document.addEventListener("click", event => {
     const img = event.target.closest(".insta-slide img");
     if (!img) return;
+
+    // Evita abrir dos veces después del pointerup de escritorio.
+    if (performance.now() - lastPointerOpenAt < 350) {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
+
     event.preventDefault();
     event.stopPropagation();
     openFrom(img);
   });
+
+  // Escritorio: app.js hace preventDefault + pointer capture para arrastrar el carrusel,
+  // lo que puede suprimir el click del <img>. Detectamos un click real por distancia.
+  document.addEventListener("pointerdown", event => {
+    if (event.pointerType === "touch" || event.button !== 0) return;
+    const img = event.target.closest(".insta-slide img");
+    if (!img) return;
+
+    pointerCandidate = img;
+    pointerId = event.pointerId;
+    pointerStartX = event.clientX;
+    pointerStartY = event.clientY;
+  }, true);
+
+  document.addEventListener("pointerup", event => {
+    if (!pointerCandidate || event.pointerId !== pointerId) return;
+
+    const candidate = pointerCandidate;
+    const distance = Math.hypot(event.clientX - pointerStartX, event.clientY - pointerStartY);
+
+    pointerCandidate = null;
+    pointerId = null;
+
+    if (distance > 7) return;
+
+    lastPointerOpenAt = performance.now();
+    setTimeout(() => openFrom(candidate), 0);
+  }, true);
+
+  document.addEventListener("pointercancel", event => {
+    if (event.pointerId !== pointerId) return;
+    pointerCandidate = null;
+    pointerId = null;
+  }, true);
 
   // Captura antes que desktop.js para que, con el visor abierto,
   // las flechas controlen únicamente la foto ampliada.
