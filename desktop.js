@@ -3,10 +3,12 @@
   const desktopQuery = window.matchMedia("(min-width: 821px)");
   const previewPanel = document.getElementById("previewPanel");
   const folderListElement = document.getElementById("folderList");
+  const photoFolderListElement = document.getElementById("photoFolderList");
   const itemListElement = document.getElementById("itemList");
   const sidebarNav = document.querySelector(".sidebar nav");
 
-  // Como en Finder en modo columnas: sidebar -> carpetas -> contenido/preview.
+  // Jerarquía Finder:
+  // barra lateral -> secciones -> subcarpetas de Fotos -> contenido -> preview/carrusel.
   // Solo la columna activa muestra selección azul.
   let activeColumn = "folders";
 
@@ -101,8 +103,8 @@
       controls = document.createElement("div");
       controls.className = "desktop-carousel-controls";
       controls.innerHTML = `
-        <button class="desktop-carousel-nav previous" type="button" data-carousel-action="previous" aria-label="${labels.previous}" title="${labels.previous}">‹</button>
-        <button class="desktop-carousel-nav next" type="button" data-carousel-action="next" aria-label="${labels.next}" title="${labels.next}">›</button>`;
+        <button class="desktop-carousel-nav previous" type="button" data-carousel-action="previous" aria-label="${labels.previous}" title="${labels.previous}"></button>
+        <button class="desktop-carousel-nav next" type="button" data-carousel-action="next" aria-label="${labels.next}" title="${labels.next}"></button>`;
       wrap.appendChild(controls);
 
       controls.querySelector('[data-carousel-action="previous"]').addEventListener("click", event => {
@@ -137,8 +139,15 @@
     syncCarouselControls(wrap, track);
   }
 
+  function rootFor(column) {
+    if (column === "folders") return folderListElement;
+    if (column === "photoFolders") return photoFolderListElement;
+    if (column === "items") return itemListElement;
+    return null;
+  }
+
   function rowsFor(column) {
-    const root = column === "folders" ? folderListElement : itemListElement;
+    const root = rootFor(column);
     if (!root) return [];
     return [...root.querySelectorAll(".row")].filter(row => row.offsetParent !== null);
   }
@@ -176,15 +185,18 @@
 
     if (currentView === "all" || currentView === "contact") return rows[0] || null;
 
-    if (currentSection === "fotos" && currentPhotoFolder) {
-      const keys = Object.keys(DATA.fotos.folders);
-      const index = keys.indexOf(currentPhotoFolder);
-      return rows[index] || rows[0] || null;
-    }
-
     const sectionKeys = Object.keys(DATA);
     const index = sectionKeys.indexOf(currentSection);
     return rows[index] || rows[0] || null;
+  }
+
+  function currentPhotoFolderRow() {
+    const rows = rowsFor("photoFolders");
+    if (!rows.length || !currentPhotoFolder) return null;
+
+    const keys = Object.keys(DATA.fotos.folders);
+    const index = keys.indexOf(currentPhotoFolder);
+    return index >= 0 ? rows[index] || null : null;
   }
 
   function currentItemRow() {
@@ -198,6 +210,7 @@
 
   function clearVisualSelection() {
     folderListElement?.querySelectorAll(".row.selected").forEach(row => row.classList.remove("selected"));
+    photoFolderListElement?.querySelectorAll(".row.selected").forEach(row => row.classList.remove("selected"));
     itemListElement?.querySelectorAll(".row.selected").forEach(row => row.classList.remove("selected"));
     sidebarNav?.querySelectorAll(".side-item.keyboard-selected").forEach(button => button.classList.remove("keyboard-selected"));
   }
@@ -214,7 +227,11 @@
       return;
     }
 
-    const row = activeColumn === "folders" ? currentFolderRow() : currentItemRow();
+    let row = null;
+    if (activeColumn === "folders") row = currentFolderRow();
+    else if (activeColumn === "photoFolders") row = currentPhotoFolderRow();
+    else if (activeColumn === "items") row = currentItemRow();
+
     row?.classList.add("selected");
     row?.scrollIntoView({ block: "nearest" });
   }
@@ -266,6 +283,23 @@
     normalizeSelection();
   }
 
+  function switchToPhotoFolders() {
+    activeColumn = "photoFolders";
+
+    if (currentPhotoFolder) {
+      normalizeSelection();
+      return;
+    }
+
+    const first = rowsFor("photoFolders")[0];
+    if (first) {
+      first.click();
+      setTimeout(normalizeSelection, 0);
+    } else {
+      normalizeSelection();
+    }
+  }
+
   function switchToItems() {
     activeColumn = "items";
 
@@ -299,6 +333,12 @@
 
     if (event.target.closest("#folderList .row")) {
       activeColumn = "folders";
+      setTimeout(normalizeSelection, 0);
+      return;
+    }
+
+    if (event.target.closest("#photoFolderList .row")) {
+      activeColumn = "photoFolders";
       setTimeout(normalizeSelection, 0);
       return;
     }
@@ -356,6 +396,12 @@
       }
 
       if (activeColumn === "items") {
+        if (currentSection === "fotos") switchToPhotoFolders();
+        else switchToFolders();
+        return;
+      }
+
+      if (activeColumn === "photoFolders") {
         switchToFolders();
         return;
       }
@@ -378,6 +424,12 @@
       }
 
       if (activeColumn === "folders") {
+        if (currentSection === "fotos" && rowsFor("photoFolders").length) switchToPhotoFolders();
+        else switchToItems();
+        return;
+      }
+
+      if (activeColumn === "photoFolders") {
         switchToItems();
         return;
       }
@@ -404,6 +456,12 @@
       }
 
       if (activeColumn === "folders") {
+        if (currentSection === "fotos") switchToPhotoFolders();
+        else switchToItems();
+        return;
+      }
+
+      if (activeColumn === "photoFolders") {
         switchToItems();
         return;
       }
@@ -412,7 +470,7 @@
     }
   });
 
-  [folderListElement, itemListElement].forEach(root => {
+  [folderListElement, photoFolderListElement, itemListElement].forEach(root => {
     if (!root) return;
     const observer = new MutationObserver(() => setTimeout(normalizeSelection, 0));
     observer.observe(root, { childList: true, subtree: true });
