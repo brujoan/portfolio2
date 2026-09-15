@@ -15,45 +15,60 @@
     position:absolute;
     top:50%;
     transform:translateY(-50%);
-    width:46px;
-    height:46px;
+    width:34px;
+    height:34px;
     display:grid;
     place-items:center;
     padding:0;
-    border:1px solid rgba(255,255,255,.16);
+    border:1px solid rgba(255,255,255,.09);
     border-radius:50%;
-    background:rgba(18,18,20,.72);
-    -webkit-backdrop-filter:blur(12px);
-    backdrop-filter:blur(12px);
-    color:#fff;
-    font-size:31px;
+    background:rgba(18,18,20,.34);
+    -webkit-backdrop-filter:blur(8px);
+    backdrop-filter:blur(8px);
+    color:rgba(255,255,255,.76);
+    font-size:22px;
+    font-weight:300;
     line-height:1;
     cursor:pointer;
-    pointer-events:auto;
-    box-shadow:0 8px 24px rgba(0,0,0,.28);
-    transition:background .16s ease,opacity .16s ease,transform .16s ease;
+    opacity:0;
+    pointer-events:none;
+    box-shadow:0 3px 12px rgba(0,0,0,.12);
+    transition:background .18s ease,color .18s ease,opacity .18s ease,transform .18s ease,border-color .18s ease;
   }
 
-  .desktop-carousel-nav:hover:not(:disabled){
-    background:rgba(42,42,46,.9);
-    transform:translateY(-50%) scale(1.04);
+  /* Los controles solo aparecen al entrar con el ratón en la galería.
+     focus-within mantiene accesibilidad al navegar con teclado. */
+  .insta-carousel-wrap:hover .desktop-carousel-nav,
+  .insta-carousel-wrap:focus-within .desktop-carousel-nav{
+    opacity:.82;
+    pointer-events:auto;
+  }
+
+  .desktop-carousel-nav:hover:not(:disabled),
+  .desktop-carousel-nav:focus-visible:not(:disabled){
+    opacity:1;
+    color:#fff;
+    background:rgba(24,24,27,.62);
+    border-color:rgba(255,255,255,.15);
+    transform:translateY(-50%) scale(1.03);
   }
 
   .desktop-carousel-nav.previous{
-    left:14px;
+    left:10px;
   }
 
   .desktop-carousel-nav.next{
-    right:14px;
+    right:10px;
   }
 
   .desktop-carousel-nav:disabled{
-    opacity:.22;
+    opacity:0 !important;
+    pointer-events:none !important;
     cursor:default;
   }
 
   .desktop-carousel-nav:focus-visible{
-    outline:2px solid rgba(10,132,255,.95);
-    outline-offset:3px;
+    outline:1px solid rgba(255,255,255,.55);
+    outline-offset:2px;
   }
 }
