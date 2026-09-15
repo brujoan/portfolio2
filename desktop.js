@@ -1,13 +1,12 @@
-// Interacciones específicas de escritorio: controles de carrusel y navegación por teclado.
+// Interacciones específicas de escritorio: controles de carrusel y navegación tipo Finder.
 (() => {
   const desktopQuery = window.matchMedia("(min-width: 821px)");
   const previewPanel = document.getElementById("previewPanel");
   const folderListElement = document.getElementById("folderList");
   const itemListElement = document.getElementById("itemList");
 
-  // Como en Finder en modo columnas: la navegación por teclado alterna
-  // entre la columna de carpetas y la columna de contenido/preview.
-  let activeColumn = "items";
+  // Como en Finder en modo columnas: solo una columna tiene selección azul.
+  let activeColumn = "folders";
 
   const carouselLabels = {
     ca: { previous: "Foto anterior", next: "Foto següent" },
@@ -31,7 +30,15 @@
     return { wrap, track };
   }
 
-  function carouselIndex(track) {
+  function carouselIndex(wrap, track) {
+    const thumbs = [...wrap.querySelectorAll(".folder-preview-thumb")];
+    const activeThumb = thumbs.findIndex(thumb => thumb.classList.contains("active"));
+    if (activeThumb >= 0) return activeThumb;
+
+    const dots = [...wrap.querySelectorAll(".carousel-dots .dot")];
+    const activeDot = dots.findIndex(dot => dot.classList.contains("active"));
+    if (activeDot >= 0) return activeDot;
+
     if (!track.clientWidth) return 0;
     return Math.round(track.scrollLeft / track.clientWidth);
   }
@@ -42,7 +49,7 @@
     const next = wrap.querySelector('[data-carousel-action="next"]');
     if (!previous || !next) return;
 
-    const index = Math.max(0, Math.min(carouselIndex(track), slides.length - 1));
+    const index = Math.max(0, Math.min(carouselIndex(wrap, track), slides.length - 1));
     previous.disabled = index <= 0;
     next.disabled = index >= slides.length - 1;
   }
@@ -73,7 +80,7 @@
   function moveCarousel(direction) {
     const carousel = getCarousel();
     if (!carousel) return false;
-    return goToCarouselIndex(carouselIndex(carousel.track) + direction);
+    return goToCarouselIndex(carouselIndex(carousel.wrap, carousel.track) + direction);
   }
 
   function installCarouselControls() {
@@ -100,6 +107,7 @@
         event.preventDefault();
         event.stopPropagation();
         activeColumn = "items";
+        normalizeSelection();
         moveCarousel(-1);
       });
 
@@ -107,6 +115,7 @@
         event.preventDefault();
         event.stopPropagation();
         activeColumn = "items";
+        normalizeSelection();
         moveCarousel(1);
       });
 
@@ -132,6 +141,58 @@
     return [...root.querySelectorAll(".row")].filter(row => row.offsetParent !== null);
   }
 
+  function filteredVisibleItems() {
+    const query = (searchInput?.value || "").trim().toLowerCase();
+    return visibleItems().filter(item =>
+      [item.title, item.meta, item.description, item.sectionLabel, item.photoFolderLabel]
+        .filter(Boolean)
+        .map(tr)
+        .join(" ")
+        .toLowerCase()
+        .includes(query)
+    );
+  }
+
+  function currentFolderRow() {
+    const rows = rowsFor("folders");
+    if (!rows.length) return null;
+
+    if (currentView === "all" || currentView === "contact") return rows[0] || null;
+
+    if (currentSection === "fotos" && currentPhotoFolder) {
+      const keys = Object.keys(DATA.fotos.folders);
+      const index = keys.indexOf(currentPhotoFolder);
+      return rows[index] || rows[0] || null;
+    }
+
+    const sectionKeys = Object.keys(DATA);
+    const index = sectionKeys.indexOf(currentSection);
+    return rows[index] || rows[0] || null;
+  }
+
+  function currentItemRow() {
+    const rows = rowsFor("items");
+    if (!rows.length || !currentItem) return null;
+
+    const items = filteredVisibleItems();
+    const index = items.findIndex(item => item.id === currentItem.id);
+    return index >= 0 ? rows[index] || null : null;
+  }
+
+  function clearVisualSelection() {
+    folderListElement?.querySelectorAll(".row.selected").forEach(row => row.classList.remove("selected"));
+    itemListElement?.querySelectorAll(".row.selected").forEach(row => row.classList.remove("selected"));
+  }
+
+  function normalizeSelection() {
+    if (!isDesktop()) return;
+
+    clearVisualSelection();
+    const row = activeColumn === "folders" ? currentFolderRow() : currentItemRow();
+    row?.classList.add("selected");
+    row?.scrollIntoView({ block: "nearest" });
+  }
+
   function selectedIndex(rows) {
     const index = rows.findIndex(row => row.classList.contains("selected"));
     return index >= 0 ? index : -1;
@@ -149,22 +210,35 @@
     const row = rows[nextIndex];
     row.scrollIntoView({ block: "nearest", behavior: "smooth" });
     row.click();
+    setTimeout(normalizeSelection, 0);
     return true;
   }
 
-  function switchColumn(column) {
-    activeColumn = column;
+  function switchToFolders() {
+    activeColumn = "folders";
+    normalizeSelection();
+  }
 
-    const rows = rowsFor(activeColumn);
-    const selected = rows.find(row => row.classList.contains("selected")) || rows[0];
-    selected?.scrollIntoView({ block: "nearest" });
+  function switchToItems() {
+    activeColumn = "items";
+
+    if (currentItem) {
+      normalizeSelection();
+      return;
+    }
+
+    const first = rowsFor("items")[0];
+    if (first) {
+      first.click();
+      setTimeout(normalizeSelection, 0);
+    } else {
+      normalizeSelection();
+    }
   }
 
   function targetIsEditable(target) {
     if (!(target instanceof HTMLElement)) return false;
-    return Boolean(
-      target.closest("input, textarea, select, [contenteditable='true'], audio, video")
-    );
+    return Boolean(target.closest("input, textarea, select, [contenteditable='true'], audio, video"));
   }
 
   document.addEventListener("click", event => {
@@ -172,68 +246,33 @@
 
     if (event.target.closest("#folderList .row")) {
       activeColumn = "folders";
-    } else if (event.target.closest("#itemList .row")) {
+      setTimeout(normalizeSelection, 0);
+      return;
+    }
+
+    if (event.target.closest("#itemList .row")) {
       activeColumn = "items";
-    } else if (event.target.closest(".insta-carousel-wrap")) {
-      // Si el usuario toca directamente la galería, las flechas vuelven a
-      // controlar las fotos hasta llegar a la primera.
+      setTimeout(normalizeSelection, 0);
+      return;
+    }
+
+    if (event.target.closest(".insta-carousel, .folder-preview-strip, .carousel-dots, .desktop-carousel-controls")) {
       activeColumn = "items";
+      setTimeout(normalizeSelection, 0);
+      return;
     }
 
     if (event.target.closest("[data-lang]")) {
-      setTimeout(installCarouselControls, 0);
+      setTimeout(() => {
+        installCarouselControls();
+        normalizeSelection();
+      }, 0);
     }
   });
 
   document.addEventListener("keydown", event => {
     if (!isDesktop() || event.defaultPrevented || targetIsEditable(event.target)) return;
     if (event.metaKey || event.ctrlKey || event.altKey) return;
-
-    const carousel = getCarousel();
-    const photoCarouselOpen = currentItem?.kind === "photos" && Boolean(carousel);
-
-    // Finder en columnas: si estamos en la columna izquierda, → vuelve al
-    // contenido. Mientras esa columna está activa, las flechas no cambian foto.
-    if (activeColumn === "folders") {
-      if (event.key === "ArrowRight") {
-        event.preventDefault();
-        switchColumn("items");
-        return;
-      }
-
-      if (event.key === "ArrowUp") {
-        event.preventDefault();
-        navigateRows(-1);
-        return;
-      }
-
-      if (event.key === "ArrowDown") {
-        event.preventDefault();
-        navigateRows(1);
-        return;
-      }
-
-      if (event.key === "ArrowLeft") {
-        event.preventDefault();
-        return;
-      }
-    }
-
-    // En una galería, ←/→ recorren las fotos. Al llegar a la primera foto,
-    // otro ← abandona el carrusel y devuelve el control a la columna de carpetas.
-    if (photoCarouselOpen && activeColumn === "items" && event.key === "ArrowLeft") {
-      event.preventDefault();
-      const index = carouselIndex(carousel.track);
-      if (index > 0) moveCarousel(-1);
-      else switchColumn("folders");
-      return;
-    }
-
-    if (photoCarouselOpen && activeColumn === "items" && event.key === "ArrowRight") {
-      event.preventDefault();
-      moveCarousel(1);
-      return;
-    }
 
     if (event.key === "ArrowUp") {
       event.preventDefault();
@@ -249,43 +288,77 @@
 
     if (event.key === "ArrowLeft") {
       event.preventDefault();
-      switchColumn("folders");
+
+      if (activeColumn === "items" && currentItem?.kind === "photos") {
+        const carousel = getCarousel();
+        if (carousel) {
+          const index = carouselIndex(carousel.wrap, carousel.track);
+          if (index > 0) {
+            goToCarouselIndex(index - 1);
+            return;
+          }
+        }
+      }
+
+      if (activeColumn === "items") switchToFolders();
       return;
     }
 
     if (event.key === "ArrowRight") {
       event.preventDefault();
-      switchColumn("items");
+
+      if (activeColumn === "folders") {
+        switchToItems();
+        return;
+      }
+
+      if (activeColumn === "items" && currentItem?.kind === "photos") {
+        const carousel = getCarousel();
+        if (carousel) {
+          const index = carouselIndex(carousel.wrap, carousel.track);
+          const last = carousel.track.querySelectorAll(".insta-slide").length - 1;
+          if (index < last) goToCarouselIndex(index + 1);
+        }
+      }
       return;
     }
 
     if (event.key === "Enter") {
-      const rows = rowsFor(activeColumn);
-      const selected = rows.find(row => row.classList.contains("selected"));
-      if (selected) {
-        event.preventDefault();
-        selected.click();
-      }
+      event.preventDefault();
+      if (activeColumn === "folders") switchToItems();
+      else currentItemRow()?.click();
     }
+  });
+
+  [folderListElement, itemListElement].forEach(root => {
+    if (!root) return;
+    const observer = new MutationObserver(() => setTimeout(normalizeSelection, 0));
+    observer.observe(root, { childList: true, subtree: true });
   });
 
   if (previewPanel) {
     const observer = new MutationObserver(() => {
-      requestAnimationFrame(installCarouselControls);
+      requestAnimationFrame(() => {
+        installCarouselControls();
+        normalizeSelection();
+      });
     });
 
-    observer.observe(previewPanel, {
-      childList: true,
-      subtree: true
-    });
+    observer.observe(previewPanel, { childList: true, subtree: true });
   }
 
   const onViewportChange = () => {
-    if (isDesktop()) requestAnimationFrame(installCarouselControls);
+    if (isDesktop()) {
+      requestAnimationFrame(() => {
+        installCarouselControls();
+        normalizeSelection();
+      });
+    }
   };
 
   if (desktopQuery.addEventListener) desktopQuery.addEventListener("change", onViewportChange);
   else desktopQuery.addListener(onViewportChange);
 
   installCarouselControls();
+  normalizeSelection();
 })();
