@@ -322,6 +322,17 @@
     return Boolean(target.closest("input, textarea, select, [contenteditable='true'], audio, video"));
   }
 
+  // El ratón debe activar el nivel antes de que el click regenere las filas.
+  // Así el resultado visual es idéntico a navegar con las flechas.
+  document.addEventListener("pointerdown", event => {
+    if (!isDesktop()) return;
+
+    if (event.target.closest(".sidebar .side-item[data-view]")) activeColumn = "sidebar";
+    else if (event.target.closest("#folderList .row")) activeColumn = "folders";
+    else if (event.target.closest("#photoFolderList .row")) activeColumn = "photoFolders";
+    else if (event.target.closest("#itemList .row")) activeColumn = "items";
+  }, true);
+
   document.addEventListener("click", event => {
     if (!isDesktop()) return;
 
