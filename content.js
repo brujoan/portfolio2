@@ -380,7 +380,7 @@ window.PORTFOLIO_CONTENT = {
           {
             id: "salou-festa-al-cel",
             title: "Salou: Festa Al Cel",
-            meta: L("Esdeveniment · 16 fotos", "Evento · 16 fotos", "Event · 16 photos"),
+            meta: L("Esdeveniment · 15 fotos", "Evento · 15 fotos", "Event · 15 photos"),
             description: L(
               "Selecció fotogràfica de Salou: Festa Al Cel.",
               "Selección fotográfica de Salou: Festa Al Cel.",
@@ -401,7 +401,6 @@ window.PORTFOLIO_CONTENT = {
               "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-10.jpg",
               "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-11.jpg",
               "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-12.jpg",
-              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-13.jpg",
               "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-14.jpg",
               "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-15.jpg",
               "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-16.jpg"
