@@ -376,6 +376,36 @@ window.PORTFOLIO_CONTENT = {
               "assets/images/events/rugby-fem-buc-vs-barca/rugby-04.jpg",
               "assets/images/events/rugby-fem-buc-vs-barca/rugby-05.jpg"
             ]
+          },
+          {
+            id: "salou-festa-al-cel",
+            title: "Salou: Festa Al Cel",
+            meta: L("Esdeveniment · 16 fotos", "Evento · 16 fotos", "Event · 16 photos"),
+            description: L(
+              "Selecció fotogràfica de Salou: Festa Al Cel.",
+              "Selección fotográfica de Salou: Festa Al Cel.",
+              "Photo selection from Salou: Festa Al Cel."
+            ),
+            contributions: [],
+            kind: "photos",
+            images: [
+              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-01.webp",
+              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-02.webp",
+              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-03.webp",
+              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-04.webp",
+              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-05.webp",
+              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-06.webp",
+              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-07.webp",
+              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-08.webp",
+              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-09.webp",
+              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-10.webp",
+              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-11.webp",
+              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-12.webp",
+              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-13.webp",
+              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-14.webp",
+              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-15.webp",
+              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-16.webp"
+            ]
           }
         ]
       },
