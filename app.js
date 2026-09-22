@@ -85,6 +85,8 @@ function updateColumnLayout() {
   if (!columns) return;
   const photosDesktop = isDesktopLayout() && currentView === "folder" && currentSection === "fotos";
   columns.classList.toggle("photos-columns", photosDesktop);
+  columns.classList.toggle("photos-folder-selected", photosDesktop && Boolean(currentPhotoFolder));
+  columns.classList.toggle("photos-item-selected", photosDesktop && Boolean(currentItem));
 }
 
 function applyStaticTranslations() {
@@ -384,6 +386,7 @@ function selectItem(item) {
   renderItems(searchInput.value);
   renderPreview(item);
   updateBreadcrumb();
+  updateColumnLayout();
 }
 
 function updateBreadcrumb() {
