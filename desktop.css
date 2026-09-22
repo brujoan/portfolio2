@@ -27,21 +27,22 @@
     display:block;
   }
 
-  /* Nivel Fotos: todavía no hay contenido de una subcarpeta. */
-  .columns.photos-columns:has(#itemList:empty){
+  /* Nivel Fotos: todavía no hay una subcarpeta seleccionada. */
+  .columns.photos-columns:not(.photos-folder-selected){
     grid-template-columns:290px 330px minmax(0,1fr);
   }
 
-  .columns.photos-columns:has(#itemList:empty) .items-column{
+  .columns.photos-columns:not(.photos-folder-selected) .items-column{
     display:none;
   }
 
-  /* Al seleccionar un trabajo, Categorías deja paso al preview. */
-  .columns.photos-columns:has(#itemList .row.selected){
+  /* Al seleccionar un trabajo, Categorías deja paso al preview.
+     Se usa el estado real de navegación, no la clase visual temporal .selected. */
+  .columns.photos-columns.photos-item-selected{
     grid-template-columns:290px 330px minmax(0,1fr);
   }
 
-  .columns.photos-columns:has(#itemList .row.selected) .folders-column{
+  .columns.photos-columns.photos-item-selected .folders-column{
     display:none;
   }
 
