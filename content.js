@@ -389,22 +389,22 @@ window.PORTFOLIO_CONTENT = {
             contributions: [],
             kind: "photos",
             images: [
-              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-01.webp",
-              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-02.webp",
-              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-03.webp",
-              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-04.webp",
-              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-05.webp",
-              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-06.webp",
-              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-07.webp",
-              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-08.webp",
-              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-09.webp",
-              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-10.webp",
-              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-11.webp",
-              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-12.webp",
-              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-13.webp",
-              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-14.webp",
-              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-15.webp",
-              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-16.webp"
+              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-01.jpg",
+              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-02.jpg",
+              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-03.jpg",
+              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-04.jpg",
+              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-05.jpg",
+              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-06.jpg",
+              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-07.jpg",
+              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-08.jpg",
+              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-09.jpg",
+              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-10.jpg",
+              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-11.jpg",
+              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-12.jpg",
+              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-13.jpg",
+              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-14.jpg",
+              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-15.jpg",
+              "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-16.jpg"
             ]
           }
         ]
