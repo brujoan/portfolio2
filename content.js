@@ -335,7 +335,26 @@ window.PORTFOLIO_CONTENT = {
               "assets/images/nikon-z8-02.jpg",
               "assets/images/nikon-z8-04.jpg"
             ]
-          }
+          },
+          {
+            id: "c80",
+            title: "Canon C80",
+            meta: L("Carrusel · 6 fotos", "Carrusel · 6 fotos", "Carousel · 6 photos"),
+            description: L("Promoció de Canon C80 i accessoris"),
+            contributions: [
+          L("Presa", "Toma", "Shoot"),
+          L("Retoc", "Retoque", "Retouch")
+        ],
+            kind: "photos",
+            images: [
+              "assets/images/c801.jpg",
+              "assets/images/c802.jpg",
+              "assets/images/c803.jpg",
+              "assets/images/c804.jpg",
+              "assets/images/c805.jpg",
+              "assets/images/c806.jpg",
+            ]
+          },
         ]
       },
 
