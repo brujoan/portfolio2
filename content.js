@@ -283,7 +283,9 @@ window.PORTFOLIO_CONTENT = {
             title: "Cobra Tether",
             meta: L("Carrusel · 3 fotos", "Carrusel · 3 fotos", "Carousel · 3 photos"),
             description: L("Fotografia de producte centrada en el detall i la textura.", "Fotografía de producto centrada en detalle y textura.", "Product photography focused on detail and texture."),
-            contributions: [],
+            contributions: [
+          L("Presa", "Toma", "Shoot"),
+          L("Retoc", "Retoque", "Retouch")
             kind: "photos",
             images: [
               "assets/images/cobra-tether-01.jpg",
@@ -296,7 +298,9 @@ window.PORTFOLIO_CONTENT = {
             title: "DZO Vespid Prime",
             meta: L("Carrusel · 7 fotos", "Carrusel · 7 fotos", "Carousel · 7 photos"),
             description: L("Sèrie de producte del kit d'òptiques DZO Vespid Prime II.", "Serie de producto del kit de ópticas DZO Vespid Prime II.", "Product series featuring the DZO Vespid Prime II lens kit."),
-            contributions: [],
+            contributions: [
+          L("Presa", "Toma", "Shoot"),
+          L("Retoc", "Retoque", "Retouch")
             kind: "photos",
             images: [
               "assets/images/dzo-05.jpg",
@@ -313,7 +317,9 @@ window.PORTFOLIO_CONTENT = {
             title: "MacBook M5",
             meta: L("Carrusel · 4 fotos", "Carrusel · 4 fotos", "Carousel · 4 photos"),
             description: L("Sèrie visual de l'últim MacBook Pro M5 Max.", "Serie visual del último MacBook Pro M5 Max.", "Visual series featuring the latest MacBook Pro M5 Max."),
-            contributions: [],
+            contributions: [
+          L("Presa", "Toma", "Shoot"),
+          L("Retoc", "Retoque", "Retouch")
             kind: "photos",
             images: [
               "assets/images/macbook-m5-01.jpg",
@@ -327,7 +333,9 @@ window.PORTFOLIO_CONTENT = {
             title: "Nikon Z8",
             meta: L("Carrusel · 4 fotos", "Carrusel · 4 fotos", "Carousel · 4 photos"),
             description: L("Fotografia de producte de càmera i òptiques de la sèrie Z de Nikon.", "Fotografía de producto de cámara y ópticas de la serie Z de Nikon.", "Product photography of a Nikon Z-series camera and lenses."),
-            contributions: [],
+            contributions: [
+          L("Presa", "Toma", "Shoot"),
+          L("Retoc", "Retoque", "Retouch")
             kind: "photos",
             images: [
               "assets/images/nikon-z8-03.jpg",
@@ -347,12 +355,12 @@ window.PORTFOLIO_CONTENT = {
         ],
             kind: "photos",
             images: [
-              "assets/images/c801.jpg",
-              "assets/images/c802.jpg",
-              "assets/images/c803.jpg",
-              "assets/images/c804.jpg",
-              "assets/images/c805.jpg",
-              "assets/images/c806.jpg",
+              "assets/images/C801.jpg",
+              "assets/images/C802.jpg",
+              "assets/images/C803.jpg",
+              "assets/images/C804.jpg",
+              "assets/images/C805.jpg",
+              "assets/images/C806.jpg",
             ]
           },
         ]
@@ -367,7 +375,9 @@ window.PORTFOLIO_CONTENT = {
             title: "DJ Set · Night of Wolves",
             meta: L("Esdeveniment · 8 fotos", "Evento · 8 fotos", "Event · 8 photos"),
             description: L("Galeria del set Night of Wolves a Tarragona.", "Galería del set Night of Wolves en Tarragona.", "Gallery from the Night of Wolves set in Tarragona."),
-            contributions: [],
+            contributions: [
+          L("Presa", "Toma", "Shoot"),
+          L("Retoc", "Retoque", "Retouch")
             kind: "photos",
             images: [
               "assets/images/night-of-wolves/dj-set-01.png",
@@ -405,7 +415,9 @@ window.PORTFOLIO_CONTENT = {
               "Selección fotográfica de Salou: Festa Al Cel.",
               "Photo selection from Salou: Festa Al Cel."
             ),
-            contributions: [],
+            contributions: [
+          L("Presa", "Toma", "Shoot"),
+          L("Retoc", "Retoque", "Retouch")
             kind: "photos",
             images: [
               "assets/images/events/salou-festa-al-cel/salou-festa-al-cel-01.jpg",
@@ -480,7 +492,7 @@ window.PORTFOLIO_CONTENT = {
         id: "operacion-camara-deportes",
         title: L("Operació de càmera · Esports", "Operación de cámara · Deportes", "Camera operation · Sports"),
         meta: L("Retransmissions · 4 fotos", "Retransmisiones · 4 fotos", "Broadcasts · 4 photos"),
-        description: L("Operació de càmera en retransmissions de 1a i 2a RFEF.", "Operación de cámara en retransmisiones de 1a y 2a RFEF.", "Camera operation for 1st and 2nd RFEF live broadcasts."),
+        description: L("Muntatge i operació de càmera en retransmissions de 1a i 2a RFEF.", "Montaje y peración de cámara en retransmisiones de 1a y 2a RFEF.", "Camera set amd operation for 1st and 2nd RFEF Spanish football league live broadcasts."),
         contributions: [L("Operació de càmera", "Operación de cámara", "Camera operation")],
         kind: "photos",
         images: [
