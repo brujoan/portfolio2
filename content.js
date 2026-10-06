@@ -445,7 +445,7 @@ window.PORTFOLIO_CONTENT = {
         audio: "assets/audio/war.wav"
       }
     ]
-  }
+  },
 
   proyectos: {
     label: L("Altres Projectes", "Otros Proyectos", "Other Projects"),
