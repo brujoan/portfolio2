@@ -125,150 +125,6 @@ window.PORTFOLIO_PROFILE = {
 };
 
 window.PORTFOLIO_CONTENT = {
-  proyectos: {
-    label: L("Projectes", "Proyectos", "Projects"),
-    icon: "✦",
-    type: "collection",
-    items: [
-      {
-        id: "spot-inmobiliaria",
-        title: "Spot iGestió",
-        meta: "Spot · YouTube",
-        description: L(
-          "Espòt publicitari per a una immobiliària amb seu a Sant Feliu de Llobregat.",
-          "Spot publicitario para una inmobiliaria basada en Sant Feliu de Llobregat.",
-          "Commercial spot for a real-estate agency based in Sant Feliu de Llobregat."
-        ),
-        contributions: [
-          L("Guió", "Guión", "Script"),
-          L("Direcció", "Dirección", "Direction"),
-          "BSO",
-          L("Postproducció", "Postproducción", "Post-production")
-        ],
-        kind: "youtube",
-        youtubeId: "6NvPclCZoAM",
-        externalUrl: "https://www.youtube.com/watch?v=6NvPclCZoAM"
-      },
-      {
-        id: "spot-peluqueria-estetica",
-        title: "Spot Pilar Marín",
-        meta: "Spot · YouTube",
-        description: L(
-          "Espòt publicitari gravat a l'Hotel Torre Melina per a una perruqueria associada a una floristeria, especialitzades en casaments.",
-          "Spot publicitario grabado en el Hotel Torre Melina para una peluquería asociada a una floristería, especializadas en bodas.",
-          "Commercial spot shot at Hotel Torre Melina for a hair salon partnered with a florist, both specialized in weddings."
-        ),
-        contributions: [],
-        kind: "youtube",
-        youtubeId: "qcvNduSf_RQ",
-        externalUrl: "https://www.youtube.com/watch?v=qcvNduSf_RQ"
-      },
-      {
-        id: "ginpasf-proyecto",
-        title: L("Documental GINPASF", "Documental GINPASF", "GINPASF Documentary"),
-        meta: L("Documental · Activitat paranormal", "Documental · Actividades paranormales", "Documentary · Paranormal activity"),
-        description: L(
-          "Docureportatge per a GINPASF (Grup d'Investigació Paranormal de Sant Feliu) sobre la llegenda de la Dama de Blanc de Fontcaldetes.",
-          "Docu-reportaje para GINPASF (Grupo de Investigación Paranormal de Sant Feliu) sobre la leyenda de la Dama de Blanco de Fontcaldetes.",
-          "Documentary report for GINPASF (Sant Feliu Paranormal Research Group) about the legend of the White Lady of Fontcaldetes."
-        ),
-        contributions: [
-          L("Localització", "Localización", "Location scouting"),
-          L("Producció", "Producción", "Production"),
-          L("Operació de càmera", "Operación de cámara", "Camera operation"),
-          L("Tècnic de so", "Técnico de sonido", "Sound technician"),
-          "BSO",
-          L("Postproducció", "Postproducción", "Post-production")
-        ],
-        kind: "youtube",
-        youtubeId: "WlQeL4UCRCo",
-        externalUrl: "https://www.youtube.com/watch?v=WlQeL4UCRCo"
-      },
-      {
-        id: "mixunets",
-        title: "Mixunets",
-        meta: L("YouTube · Contingut personal", "YouTube · Contenido personal", "YouTube · Personal content"),
-        description: L(
-          "Canal de YouTube principalment de viatges, el meu contingut més personal i pur.",
-          "Canal de YouTube principalmente de viajes, mi contenido más personal y puro.",
-          "A YouTube channel focused mainly on travel: my most personal and unfiltered content."
-        ),
-        contributions: [],
-        kind: "channel",
-        externalUrl: "https://www.youtube.com/@mixunets",
-        thumbnails: [
-          { local: "assets/images/mixunets/01.jpg", remote: "https://i.ytimg.com/vi/hi8ji331RJA/maxresdefault.jpg" },
-          { local: "assets/images/mixunets/02.jpg", remote: "https://i.ytimg.com/vi/S6jKOkwNUc4/maxresdefault.jpg" },
-          { local: "assets/images/mixunets/03.jpg", remote: "https://i.ytimg.com/vi/3sNJUAODwsk/maxresdefault.jpg" },
-          { local: "assets/images/mixunets/04.jpg", remote: "https://i.ytimg.com/vi/MIDbMiKg6TE/maxresdefault.jpg" }
-        ]
-      }
-    ]
-  },
-
-  vertical: {
-    label: "Vertical",
-    icon: "🎞️",
-    type: "collection",
-    items: [
-      {
-        id: "c80gear",
-        title: "Canon C80 Rig",
-        meta: "00:41 · Vertical",
-        description: L("Vestint des de zero una Canon C80.", "Vistiendo desde cero una Canon C80.", "Building a Canon C80 rig from scratch."),
-        contributions: [],
-        kind: "video",
-        video: "assets/videos/c80gear.mp4",
-        poster: "assets/images/video-posters/c80gear.jpg",
-        dimensions: "720×1280"
-      },
-      {
-        id: "cadires",
-        title: "Prop Chairs",
-        meta: "00:05 · Vertical",
-        description: L("Stop-motion bàsic i divertit amb cadires d'atrezzo.", "Stop motion básico y divertido con sillas de atrezo.", "A simple, playful stop-motion piece using prop chairs."),
-        contributions: [],
-        kind: "video",
-        video: "assets/videos/cadires.mp4",
-        poster: "assets/images/video-posters/cadires.jpg",
-        dimensions: "720×1280"
-      },
-      {
-        id: "fxlion",
-        title: "FXLion Nano Pro Unboxing",
-        meta: "00:26 · Vertical",
-        description: L("Unboxing d'un nou model de bateries V-Mount.", "Unboxing de un nuevo modelo de baterías V-Mount.", "Unboxing a new V-Mount battery model."),
-        contributions: [],
-        kind: "video",
-        video: "assets/videos/fxlion.mp4",
-        poster: "assets/images/video-posters/fxlion.jpg",
-        dimensions: "720×1280"
-      },
-      {
-        id: "studio1-koi",
-        title: "Movistar KOI Photoshoot Making Of",
-        meta: "00:21 · Vertical",
-        description: L("Making of de la sessió fotogràfica per a la nova col·lecció de samarretes de Movistar KOI.", "Making Of del photoshoot para la nueva colección de camisetas de Movistar KOI.", "Behind the scenes of the photoshoot for Movistar KOI's new jersey collection."),
-        contributions: [],
-        kind: "video",
-        video: "assets/videos/studio1-koi.mp4",
-        poster: "assets/images/video-posters/studio1-koi.jpg",
-        dimensions: "720×1280"
-      },
-      {
-        id: "studio2-irene",
-        title: "Model Photoshoot Making Of",
-        meta: "00:18 · Vertical",
-        description: L("Making of d'una sessió fotogràfica de moda.", "Making Of de photoshoot de moda.", "Behind the scenes of a fashion photoshoot."),
-        contributions: [],
-        kind: "video",
-        video: "assets/videos/studio2-irene.mp4",
-        poster: "assets/images/video-posters/studio2-irene.jpg",
-        dimensions: "720×1280"
-      }
-    ]
-  },
-
   fotos: {
     label: "Fotos",
     icon: "📷",
@@ -471,9 +327,72 @@ window.PORTFOLIO_CONTENT = {
     }
   },
 
+  vertical: {
+    label: "Vertical",
+    icon: "🎞️",
+    type: "collection",
+    items: [
+      {
+        id: "c80gear",
+        title: "Canon C80 Rig",
+        meta: "00:41 · Vertical",
+        description: L("Vestint des de zero una Canon C80.", "Vistiendo desde cero una Canon C80.", "Building a Canon C80 rig from scratch."),
+        contributions: [],
+        kind: "video",
+        video: "assets/videos/c80gear.mp4",
+        poster: "assets/images/video-posters/c80gear.jpg",
+        dimensions: "720×1280"
+      },
+      {
+        id: "cadires",
+        title: "Prop Chairs",
+        meta: "00:05 · Vertical",
+        description: L("Stop-motion bàsic i divertit amb cadires d'atrezzo.", "Stop motion básico y divertido con sillas de atrezo.", "A simple, playful stop-motion piece using prop chairs."),
+        contributions: [],
+        kind: "video",
+        video: "assets/videos/cadires.mp4",
+        poster: "assets/images/video-posters/cadires.jpg",
+        dimensions: "720×1280"
+      },
+      {
+        id: "fxlion",
+        title: "FXLion Nano Pro Unboxing",
+        meta: "00:26 · Vertical",
+        description: L("Unboxing d'un nou model de bateries V-Mount.", "Unboxing de un nuevo modelo de baterías V-Mount.", "Unboxing a new V-Mount battery model."),
+        contributions: [],
+        kind: "video",
+        video: "assets/videos/fxlion.mp4",
+        poster: "assets/images/video-posters/fxlion.jpg",
+        dimensions: "720×1280"
+      },
+      {
+        id: "studio1-koi",
+        title: "Movistar KOI Photoshoot Making Of",
+        meta: "00:21 · Vertical",
+        description: L("Making of de la sessió fotogràfica per a la nova col·lecció de samarretes de Movistar KOI.", "Making Of del photoshoot para la nueva colección de camisetas de Movistar KOI.", "Behind the scenes of the photoshoot for Movistar KOI's new jersey collection."),
+        contributions: [],
+        kind: "video",
+        video: "assets/videos/studio1-koi.mp4",
+        poster: "assets/images/video-posters/studio1-koi.jpg",
+        dimensions: "720×1280"
+      },
+      {
+        id: "studio2-irene",
+        title: "Model Photoshoot Making Of",
+        meta: "00:18 · Vertical",
+        description: L("Making of d'una sessió fotogràfica de moda.", "Making Of de photoshoot de moda.", "Behind the scenes of a fashion photoshoot."),
+        contributions: [],
+        kind: "video",
+        video: "assets/videos/studio2-irene.mp4",
+        poster: "assets/images/video-posters/studio2-irene.jpg",
+        dimensions: "720×1280"
+      }
+    ]
+  },
+
   retransmisiones: {
     label: L("Retransmissions", "Retransmisiones", "Broadcasts"),
-    icon: "◉",
+    icon: "📡",
     type: "collection",
     items: [
       {
@@ -495,7 +414,7 @@ window.PORTFOLIO_CONTENT = {
 
   musica: {
     label: L("Producció musical", "Producción musical", "Music production"),
-    icon: "♫",
+    icon: "🎵",
     type: "collection",
     items: [
       {
@@ -527,4 +446,85 @@ window.PORTFOLIO_CONTENT = {
       }
     ]
   }
+
+  proyectos: {
+    label: L("Altres Projectes", "Otros Proyectos", "Other Projects"),
+    icon: "🎬",
+    type: "collection",
+    items: [
+      {
+        id: "spot-inmobiliaria",
+        title: "Spot iGestió",
+        meta: "Spot · YouTube",
+        description: L(
+          "Espòt publicitari per a una immobiliària amb seu a Sant Feliu de Llobregat.",
+          "Spot publicitario para una inmobiliaria basada en Sant Feliu de Llobregat.",
+          "Commercial spot for a real-estate agency based in Sant Feliu de Llobregat."
+        ),
+        contributions: [
+          L("Guió", "Guión", "Script"),
+          L("Direcció", "Dirección", "Direction"),
+          "BSO",
+          L("Postproducció", "Postproducción", "Post-production")
+        ],
+        kind: "youtube",
+        youtubeId: "6NvPclCZoAM",
+        externalUrl: "https://www.youtube.com/watch?v=6NvPclCZoAM"
+      },
+      {
+        id: "spot-peluqueria-estetica",
+        title: "Spot Pilar Marín",
+        meta: "Spot · YouTube",
+        description: L(
+          "Espòt publicitari gravat a l'Hotel Torre Melina per a una perruqueria associada a una floristeria, especialitzades en casaments.",
+          "Spot publicitario grabado en el Hotel Torre Melina para una peluquería asociada a una floristería, especializadas en bodas.",
+          "Commercial spot shot at Hotel Torre Melina for a hair salon partnered with a florist, both specialized in weddings."
+        ),
+        contributions: [],
+        kind: "youtube",
+        youtubeId: "qcvNduSf_RQ",
+        externalUrl: "https://www.youtube.com/watch?v=qcvNduSf_RQ"
+      },
+      {
+        id: "ginpasf-proyecto",
+        title: L("Documental GINPASF", "Documental GINPASF", "GINPASF Documentary"),
+        meta: L("Documental · Activitat paranormal", "Documental · Actividades paranormales", "Documentary · Paranormal activity"),
+        description: L(
+          "Docureportatge per a GINPASF (Grup d'Investigació Paranormal de Sant Feliu) sobre la llegenda de la Dama de Blanc de Fontcaldetes.",
+          "Docu-reportaje para GINPASF (Grupo de Investigación Paranormal de Sant Feliu) sobre la leyenda de la Dama de Blanco de Fontcaldetes.",
+          "Documentary report for GINPASF (Sant Feliu Paranormal Research Group) about the legend of the White Lady of Fontcaldetes."
+        ),
+        contributions: [
+          L("Localització", "Localización", "Location scouting"),
+          L("Producció", "Producción", "Production"),
+          L("Operació de càmera", "Operación de cámara", "Camera operation"),
+          L("Tècnic de so", "Técnico de sonido", "Sound technician"),
+          "BSO",
+          L("Postproducció", "Postproducción", "Post-production")
+        ],
+        kind: "youtube",
+        youtubeId: "WlQeL4UCRCo",
+        externalUrl: "https://www.youtube.com/watch?v=WlQeL4UCRCo"
+      },
+      {
+        id: "mixunets",
+        title: "Mixunets",
+        meta: L("YouTube · Contingut personal", "YouTube · Contenido personal", "YouTube · Personal content"),
+        description: L(
+          "Canal de YouTube principalment de viatges, el meu contingut més personal i pur.",
+          "Canal de YouTube principalmente de viajes, mi contenido más personal y puro.",
+          "A YouTube channel focused mainly on travel: my most personal and unfiltered content."
+        ),
+        contributions: [],
+        kind: "channel",
+        externalUrl: "https://www.youtube.com/@mixunets",
+        thumbnails: [
+          { local: "assets/images/mixunets/01.jpg", remote: "https://i.ytimg.com/vi/hi8ji331RJA/maxresdefault.jpg" },
+          { local: "assets/images/mixunets/02.jpg", remote: "https://i.ytimg.com/vi/S6jKOkwNUc4/maxresdefault.jpg" },
+          { local: "assets/images/mixunets/03.jpg", remote: "https://i.ytimg.com/vi/3sNJUAODwsk/maxresdefault.jpg" },
+          { local: "assets/images/mixunets/04.jpg", remote: "https://i.ytimg.com/vi/MIDbMiKg6TE/maxresdefault.jpg" }
+        ]
+      }
+    ]
+  },
 };
